@@ -1,0 +1,13 @@
+Dependencies
+------------
+
+1. `django_html`_.
+
+2. `python-markdown2`_.
+
+3. `HTML Diff`_, the contents of which are expected to be in a module
+   named ``htmldiff`` on your ``PYTHONPATH``.
+
+.. _`django_html`: http://code.google.com/p/django-html/
+.. _`python-markdown2`: http://code.google.com/p/python-markdown2/
+.. _`HTML Diff`: http://www.aaronsw.com/2002/diff

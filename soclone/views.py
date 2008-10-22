@@ -12,12 +12,12 @@ from django.template import RequestContext
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
+import htmldiff
 from markdown2 import Markdown
 from soclone import auth
 from soclone import diff
 from soclone.forms import (AddAnswerForm, AskQuestionForm, CommentForm,
     EditAnswerForm, EditQuestionForm, RetagQuestionForm, RevisionForm)
-from soclone import htmldiff
 from soclone.http import JsonResponse
 from soclone.models import (Answer, AnswerRevision, Badge, Comment, Question,
     QuestionRevision, Tag)
