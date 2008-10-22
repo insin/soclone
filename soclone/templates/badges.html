@@ -1,0 +1,42 @@
+{% extends "base_2col.html" %}
+
+{% block bodyclass %}badges{% endblock %}
+
+{% block main %}
+<table id="badges">
+<col width="200px">
+<tbody>
+{% for badge in badges %}
+  <tr>
+    <td>
+      <a class="{{ badge.get_type_display }} badge" title="{{ badge.get_type_display }} badge: {{ badge.description }}" href="{{ badge.get_absolute_url }}">
+        <span class="badge{{ badge.type }}">&bull;</span> {{ badge.name }}
+      </a>
+      <span class="item-multiplier">&times; {{ badge.awarded_count }}</span>
+    </td>
+    <td>{{ badge.description }}</td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}
+
+{% block sidebar %}
+<div class="module">
+  <h4>Legend</h4>
+  <div class="badge-legend">
+    <span class="badge" title="gold badge: awarded rarely"><span class="badge1">&bull;</span> Gold Badge</span>
+  </div>
+  <p>Gold Badges are rare. You'll have to not only participate but be skilled and knowledgeable about topics to earn these. They're something of an accomplishment!</p>
+
+  <div class="badge-legend">
+    <span class="badge" title="silver badge: awarded occasionally"><span class="badge2">&bull;</span> Silver Badge</span>
+  </div>
+  <p> Silver badges are earned for longer term goals. Silver badges are uncommon, but definitely attainable if you’re interested enough.</p>
+
+  <div class="badge-legend">
+    <span class="badge" title="bronze badge: awarded frequently"><span class="badge3">&bull;</span> Bronze Badge</span>
+  </div>
+  <p>Bronze badges are earned for basic use of the site; they are relatively easy to earn &mdash; if you know how.</p>
+</div>
+{% endblock %}

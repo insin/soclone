@@ -1,0 +1,13 @@
+{% load soclone_tags %}
+<div class="user-details">
+  {% if question.wiki %}
+  <span class="wiki" title="This question is owned by the community. Votes do not generate reputation, and this question is editable by anyone with 750 rep">community wiki</span>
+  {% else %}
+  <div class="post-time">{{ view.user_action }} <strong>{{ display_time|timesince }} ago</strong></div>
+  <div class="gravatar">{% gravatar display_user 32 %}</div>
+  <div class="user-details">
+    <a href="{% url user display_user.id %}{{ display_user.username }}/">{{ display_user.username }}</a>
+    {% reputation display_user %}
+  </div>
+  {% endif %}
+</div>

@@ -1,0 +1,70 @@
+{% extends "base_2col.html" %}
+{% load html %}
+
+{% block bodyclass %}ask-question{% endblock %}
+
+{% block extrahead %}
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/prettify.css" media="screen">
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/textarearesizer.css" media="screen">
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/wmd/wmd.js"></script>
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/typewatch-2.0.0.js"></script>
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/textarearesizer-1.0.4.js"></script>
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/prettify.js"></script>
+  <script type="text/javascript">
+  $(function()
+  {
+      $("#preview-button").hide();
+      $("#id_text").typeWatch({highlight: false, wait: 3000,
+                               captureLength: 5, callback: SOClone.styleCode});
+      $("#id_text:not(.processed)").TextAreaResizer();
+  });
+  </script>
+{% endblock %}
+
+{% block main %}
+    <form id="question-form" method="POST" action="{% url ask_question %}">
+      <div class="form-item">
+        {{ form.title.label_tag }}
+        {% if form.title.errors %}{{ form.title.errors.as_ul }}{% endif %}
+        {% field form.title size="82" %}
+        <p class="help">Enter a descriptive title - "I need help!" isn't likely to elicit any response.</p>
+      </div>
+      <div class="form-item">
+        {% if form.text.errors %}{{ form.text.errors.as_ul }}{% endif %}
+        <div class="resizable-textarea">
+        {% field form.text %}
+        </div>
+        {% field form.wiki %} {{ form.wiki.label_tag }}
+      </div>
+      <div class="form-item">
+        <div class="wmd-preview">{% if preview %}{{ preview }}{% endif %}</div>
+      </div>
+      <div class="form-item">
+        {{ form.tags.label_tag }}
+        {% if form.tags.errors %}{{ form.tags.errors.as_ul }}{% endif %}
+        {% field form.tags size="60" %}
+        <p class="help">Combine multiple words into single-words, space to separate up to 5 tags (python c# ruby)</p>
+      </div>
+      <div class="form-submit">
+        <input type="submit" name="submit" value="Ask Your Question">
+        <input type="submit" name="preview" id="preview-button" value="Preview">
+      </div>
+    </form>
+{% endblock %}
+
+{% block sidebar %}
+    <div class="module">
+      <h4>Good Questions</h4>
+      <p>Try to ask questions that can be <em>answered</em>, not just discussed.</p>
+      <p>Provide details, but write clearly and simply.</p>
+    </div>
+    <div class="module">
+      <h4>Markdown Quick Reference</h4>
+      <p>indent <code>code</code> by 4 spaces</p>
+      <p>don't want colorization? Use &lt;pre&gt;</p>
+      <p>to linebreak use 2 spaces at end</p>
+      <p>&gt; blockquote</p>
+      <p>backtick escapes <code>`like this`</code></p>
+      <p>&lt;http://foo.com&gt;<br>[foo](http://foo.com)<br>&lt;a href="http://foo.com"&gt;foo&lt;/a&gt;</p>
+    </div>
+{% endblock %}

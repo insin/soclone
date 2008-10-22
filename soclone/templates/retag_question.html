@@ -1,0 +1,48 @@
+{% extends "base_2col.html" %}
+{% load html %}
+
+{% block extrahead %}
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/prettify.css" media="screen">
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/prettify.js"></script>
+  <script type="text/javascript">
+  $(function()
+  {
+       SOClone.styleCode();
+  });
+  </script>
+{% endblock %}
+
+{% block pageheader_title %}{{ block.super }} [<a href="{{ question.get_absolute_url }}">Return to Question</a>]{% endblock %}
+
+{% block main %}
+    <form id="question-form" method="POST" action="{% url ask_question %}">
+      <h1>{{ question.title }}</h1>
+      <div class="text">
+        {{ question.html }}
+      </div>
+      <div class="form-item">
+        {{ form.tags.label_tag }}
+        {% if form.tags.errors %}{{ form.tags.errors.as_ul }}{% endif %}
+        {% field form.tags %}
+        <p class="help">Combine multiple words into single-words, space to separate up to 5 tags (python c# ruby)</p>
+      </div>
+      <div class="form-submit">
+        <input type="submit" name="submit" value="Submit">
+      </div>
+    </form>
+{% endblock %}
+
+{% block sidebar %}
+    <div class="module">
+      <h4>Good Tagging</h4>
+      <p>Favor existing popular tags.</p>
+      <p>Do not create new tags unless you have to.</p>
+      <p>Use common abbreviations.</p>
+      <p>Avoid including synonyms.</p>
+      <p>Maximum of 5 tags per question.</p>
+      <p>Maximum of 24 chars per tag.</p>
+      <p>Tag characters: [a-z 0-9 + # - .]</p>
+      <p>Delimit tags by space, semicolon, or comma.</p>
+      <p style="text-align: right;"><a href="{% url tags %}">popular tags &raquo;</a></p>
+    </div>
+{% endblock %}

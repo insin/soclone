@@ -1,0 +1,100 @@
+{% load html %}{% load soclone_tags %}{% doctype "html4" %}
+<html lang="en">
+<head>
+  <title>{% block fulltitle %}{% if title %}{{ title }} - {% endif %}SOClone{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/soclone.css" media="screen">
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/soclone.js"></script>
+  {% block extrahead %}{% endblock %}
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+<div id="container">
+  <div id="header">
+    <div id="logo">
+      <a href="{% url index %}">
+        <img src="{{ MEDIA_URL }}img/logo.png" width="250" height="70" alt="SOClone">
+      </a>
+    </div>
+    <div id="header-content">
+      <div id="top-bar">
+        <div id="header-links">
+         {% if user.is_authenticated %}
+          <a href="{{ user.get_profile_url }}">{{ user.username }}</a> {% reputation user %}
+          <span class="link-separator">|</span>
+          <a href="{% url logout %}">logout</a>
+         {% else %}
+          <a href="{% url login %}">login</a>
+         {% endif %}
+          <span class="link-separator">|</span>
+          <a href="{% url about %}">about</a>
+          <span class="link-separator">|</span>
+          <a href="{% url faq %}">faq</a>
+        </div>
+        <div id="header-search">
+          <form name="search" id="search" method="GET" action="{% url search %}">
+            <div>
+              <input type="text" size="27" maxlength="80" name="q">
+              <input type="submit" value="Search">
+            </div>
+          </form>
+        </div>
+        <br style="clear: both">
+      </div>
+      <div id="nav">
+        <ul>
+          <li id="nav-questions"><a href="{% url questions %}">Questions</a></li>
+          <li id="nav-tags"><a href="{% url tags %}">Tags</a></li>
+          <li id="nav-users"><a href="{% url users %}">Users</a></li>
+          <li id="nav-badges"><a href="{% url badges %}">Badges</a></li>
+          <li id="nav-unanswered"><a href="{% url unanswered %}">Unanswered</a></li>
+          <li id="nav-ask-question"><a href="{% url ask_question %}">Ask Question</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="content">
+    <div id="pageheader">
+      <h2>{% block pageheader_title %}{% firstof pageheader_title title %}{% endblock %}</h2>
+      {% block pageheader_content %}{% endblock %}
+    </div>
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<div id="footer">
+  {% if debug %}
+  <div id="debug">
+    <h2>Queries</h2>
+    <p>
+      {{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}
+      {% ifnotequal sql_queries|length 0 %}
+      (<span style="cursor: pointer;" onclick="var s=document.getElementById('debugQueryTable').style;s.display=s.display=='none'?'':'none';this.innerHTML=this.innerHTML=='Show'?'Hide':'Show';">Show</span>)
+      {% endifnotequal %}
+    </p>
+    <table id="debugQueryTable" style="display: none;">
+      <col width="1">
+      <col>
+      <col width="1">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">SQL</th>
+        <th scope="col">Time</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for query in sql_queries %}<tr class="{% cycle odd,even %}">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ query.sql|escape }}</td>
+        <td>{{ query.time }}</td>
+      </tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+</body>
+</html>

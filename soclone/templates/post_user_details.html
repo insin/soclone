@@ -1,0 +1,25 @@
+{% load soclone_tags %}
+{% if post.last_edited_at %}
+<div class="post-user-details post-editor">
+  <div class="post-time">edited <strong><a href="{{ post.get_revision_url }}">{{ post.last_edited_at|timesince }} ago</a></strong></div>
+  {% if display_editor %}
+  <div class="gravatar">{% gravatar post.last_edited_by 32 %}</div>
+  <div class="user-details">
+    <a href="{% url user post.last_edited_by.id %}">{{ post.last_edited_by.username }}</a>
+    {% if not post.wiki %}{% reputation post.last_edited_by %}{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+<div class="post-user-details post-author">
+  {% if post.wiki %}
+  <span class="wiki" title="This post is owned by the community. Votes do not generate reputation, and this post is editable by anyone with 750 rep">community wiki</span>
+  {% else %}
+  <div class="post-time">added <strong>{{ post.added_at|timesince }} ago</strong></div>
+  <div class="gravatar">{% gravatar post.author 32 %}</div>
+  <div class="user-details">
+    <a href="{% url user post.author.id %}">{{ post.author.username }}</a>
+    {% reputation post.author %}
+  </div>
+  {% endif %}
+</div>
