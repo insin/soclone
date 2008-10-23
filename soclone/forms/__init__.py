@@ -108,4 +108,4 @@ class EditAnswerForm(forms.Form):
                                                      label=WIKI_CHECKBOX_LABEL)
 
 class CommentForm(forms.Form):
-    comment = forms.CharField(max_length=300, widget=forms.Textarea(attrs={'maxlength': 300, 'cols': 70, 'rows': 2))
+    comment = forms.CharField(min_length=10, max_length=300, widget=forms.Textarea(attrs={'maxlength': 300, 'cols': 70, 'rows': 2}))
