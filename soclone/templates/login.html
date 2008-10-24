@@ -2,26 +2,26 @@
 {% load html %}
 
 {% block content %}
-  {% if user.is_authenticated %}
-    <p>You're already logged in.</p>
-  {% else %}
-    {% if form.errors %}
-    <ul class="error-list"><li>Your username and password didn't match. Please try again.</li></ul>
-    {% endif %}
-
-    <form method="post" action=".">
-      <div class="form-item">
-         {{ form.username.label_tag }}
-         {% field form.username %}
-      </div>
-      <div class="form-item">
-         {{ form.password.label_tag }}
-         {% field form.password %}
-      </div>
-      <div class="form-submit">
-        <input type="submit" value="Login">
-        <input type="hidden" name="next" value="{{ next }}">
-      </div>
-    </form>
+{% if user.is_authenticated %}
+  <p>You're already logged in.</p>
+{% else %}
+  {% if form.errors %}
+  <ul class="error-list"><li>Your username and password didn't match. Please try again.</li></ul>
   {% endif %}
+
+  <form method="post" action=".">
+    <div class="form-item">
+       {{ form.username.label_tag }}
+       {% field form.username %}
+    </div>
+    <div class="form-item">
+       {{ form.password.label_tag }}
+       {% field form.password %}
+    </div>
+    <div class="form-submit">
+      <input type="submit" value="Login">
+      <input type="hidden" name="next" value="{{ next }}">
+    </div>
+  </form>
+{% endif %}
 {% endblock %}

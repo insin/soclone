@@ -6,35 +6,31 @@
 {% block bodyclass %}tags{% endblock %}
 
 {% block pageheader_content %}
-      <div class="tabs">
-        <a href="{% url tags %}?sort=popular" title="most popular tags"{% ifequal sort "popular" %} class="active"{% endifequal %}>Popular</a>
-        <a href="{% url tags %}?sort=name" title="tags in alphabetical order"{% ifequal sort "name" %} class="active"{% endifequal %}>Name</a>
-      </div>
+<div class="tabs">
+  <a href="{% url tags %}?sort=popular" title="most popular tags"{% ifequal sort "popular" %} class="active"{% endifequal %}>Popular</a>
+  <a href="{% url tags %}?sort=name" title="tags in alphabetical order"{% ifequal sort "name" %} class="active"{% endifequal %}>Name</a>
+</div>
 {% endblock %}
 
 {% block content %}
-    <div id="tags">
-      <form name="tag-filter-form" method="GET" action="{% url tags %}">
-        <p><label for="filter">Find tags:</label> <input type="text" name="filter" id="filter" value="{{ filter|default:"" }}"><input type="hidden" name="sort" value="{{ sort }}"> <input type="submit" value="Search"></p>
-      </form>
-      <div class="tag-lists">
-        {% for tag_list in tags|in_batches_of_size:"10" %}
-        <div class="tag-list">
-          {% for tag in tag_list %}
-          <a href="{{ tag.get_absolute_url }}" class="tag" rel="tag" title="show questions tagged '{{ tag.name }}'">{{ tag.name }}</a>{% if tag.use_count %} &times; {{ tag.use_count|intcomma }}{% endif %}{% if not foorloop.last %}<br>{% endif %}
-          {% endfor %}
-        </div>
-        {% endfor %}
-      </div>
-
-      {% if page.has_other_pages %}
-      <div class="pagination">
-        {% if filter %}
-          {% pager page sort=sort filter=filter %}
-        {% else %}
-          {% pager page sort=sort %}
-        {% endif %}
-      </div>
-      {% endif %}
+<div id="tags">
+  <form name="tag-filter-form" method="GET" action="{% url tags %}">
+    <p><label for="filter">Find tags:</label> <input type="text" name="filter" id="filter" value="{{ filter|default:"" }}"><input type="hidden" name="sort" value="{{ sort }}"> <input type="submit" value="Search"></p>
+  </form>
+  <div class="tag-lists">
+    {% for tag_list in tags|in_batches_of_size:"10" %}
+    <div class="tag-list">
+      {% for tag in tag_list %}
+      <a href="{{ tag.get_absolute_url }}" class="tag" rel="tag" title="show questions tagged '{{ tag.name }}'">{{ tag.name }}</a>{% if tag.use_count %} &times; {{ tag.use_count|intcomma }}{% endif %}{% if not foorloop.last %}<br>{% endif %}
+      {% endfor %}
     </div>
+    {% endfor %}
+  </div>
+
+  {% if page.has_other_pages %}
+  <div class="pagination">
+    {% if filter %}{% pager page sort=sort filter=filter %}{% else %}{% pager page sort=sort %}{% endif %}
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

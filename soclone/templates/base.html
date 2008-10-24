@@ -1,13 +1,14 @@
-{% load html %}{% load soclone_tags %}{% doctype "html4" %}
+{% load html soclone_tags %}{% doctype "html4" %}
 <html lang="en">
 <head>
   <title>{% block fulltitle %}{% if title %}{{ title }} - {% endif %}SOClone{% endblock %}</title>
   <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/soclone.css" media="screen">
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/soclone.js"></script>
-  {% block extrahead %}{% endblock %}
+{% block extrahead %}{% endblock %}
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
+
 <div id="container">
   <div id="header">
     <div id="logo">
@@ -18,13 +19,13 @@
     <div id="header-content">
       <div id="top-bar">
         <div id="header-links">
-         {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
           <a href="{{ user.get_profile_url }}">{{ user.username }}</a> {% reputation user %}
           <span class="link-separator">|</span>
           <a href="{% url logout %}">logout</a>
-         {% else %}
+          {% else %}
           <a href="{% url login %}">login</a>
-         {% endif %}
+          {% endif %}
           <span class="link-separator">|</span>
           <a href="{% url about %}">about</a>
           <span class="link-separator">|</span>
@@ -38,7 +39,6 @@
             </div>
           </form>
         </div>
-        <br style="clear: both">
       </div>
       <div id="nav">
         <ul>
@@ -56,15 +56,15 @@
   <div id="content">
     <div id="pageheader">
       <h2>{% block pageheader_title %}{% firstof pageheader_title title %}{% endblock %}</h2>
-      {% block pageheader_content %}{% endblock %}
+{% block pageheader_content %}{% endblock %}
     </div>
 
-    {% block content %}{% endblock %}
+{% block content %}{% endblock %}
   </div>
 </div>
 
 <div id="footer">
-  {% if debug %}
+{% if debug %}
   <div id="debug">
     <h2>Queries</h2>
     <p>
@@ -93,7 +93,7 @@
       </tbody>
     </table>
   </div>
-  {% endif %}
+{% endif %}
 </div>
 
 </body>

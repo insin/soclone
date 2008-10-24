@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-{% load soclone_tags %}
+{% load soclone_tags list_tags %}
 {% load list_tags %}
 
 {% block bodyclass %}badges{% endblock %}
 
 {% block content %}
-    <div id="badge">
-      <p><span class="badge"><span class="badge{{ badge.type }}">&bull;</span> {{ badge.name }}</span> {{ badge.description }}</p>
-      <div class="user-lists">
-      {% for recipient_list in awarded_to|in_batches:"4" %}
-        {% if recipient_list %}
-        <div class="user-list">
-          {% for recipient in recipient_list %}
-          <a href="{% url user recipient.id %}{{ recipient.username }}/">{{ recipient.username }}</a> {% reputation recipient %}
-          {% endfor %}
-        </div>
-        {% endif %}
+<div id="badge">
+  <p><span class="badge"><span class="badge{{ badge.type }}">&bull;</span> {{ badge.name }}</span> {{ badge.description }}</p>
+  <div class="user-lists">
+  {% for recipient_list in awarded_to|in_batches:"4" %}
+    {% if recipient_list %}
+    <div class="user-list">
+      {% for recipient in recipient_list %}
+      <a href="{% url user recipient.id %}{{ recipient.username }}/">{{ recipient.username }}</a> {% reputation recipient %}
       {% endfor %}
-      </div>
     </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+</div>
 {% endblock %}

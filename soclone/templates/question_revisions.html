@@ -4,33 +4,34 @@
 {% block bodyclass %}questions{% endblock %}
 
 {% block content %}
-    <div id="revisions">
-    {% for revision in revisions %}
-      <div class="revision{% ifequal question.author_id revision.author_id %} author{% endifequal %}">
-        <div class="header">
-          <div class="header-controls">
-            <span class="revision-number" title="revision {{ revision.revision }}">{{ revision.revision }}</span>
-            <div class="controls">
-              {% if revision.summary %}
-              <div class="summary">{{ revision.summary }}</div>
-              {% endif %}
-              <a href="#">view source</a>
-              <span class="link-separator">|</span>
-              <a href="{% url edit_question question.id %}?revision={{ revision.revision }}">edit</a>
-            </div>
-          </div>
-          <div class="revision-author">
-            <div class="post-time">edited <strong>{{ revision.revised_at|timesince }} ago</strong></div>
-            <div class="gravatar">{% gravatar revision.author 32 %}</div>
-            <div class="user-details">
-              <a href="{% url user revision.author_id %}{{ revision.author.username }}/">{{ revision.author.username }}</a>
-              {% reputation revision.author %}
-            </div>
-          </div>
-        </div>
-        <div class="diff">
-          {{ revision.diff|safe }}
+<div id="revisions">
+{% for revision in revisions %}
+  <div class="revision{% ifequal question.author_id revision.author_id %} author{% endifequal %}">
+    <div class="header">
+      <div class="header-controls">
+        <span class="revision-number" title="revision {{ revision.revision }}">{{ revision.revision }}</span>
+        <div class="controls">
+          {% if revision.summary %}
+          <div class="summary">{{ revision.summary }}</div>
+          {% endif %}
+          <a href="#">view source</a>
+          <span class="link-separator">|</span>
+          <a href="{% url edit_question question.id %}?revision={{ revision.revision }}">edit</a>
         </div>
       </div>
-    {% endfor %}
+      <div class="revision-author">
+        <div class="post-time">edited <strong>{{ revision.revised_at|timesince }} ago</strong></div>
+        <div class="gravatar">{% gravatar revision.author 32 %}</div>
+        <div class="user-details">
+          <a href="{% url user revision.author_id %}{{ revision.author.username }}/">{{ revision.author.username }}</a>
+          {% reputation revision.author %}
+        </div>
+      </div>
+    </div>
+    <div class="diff">
+      {{ revision.diff|safe }}
+    </div>
+  </div>
+{% endfor %}
+</div>
 {% endblock %}

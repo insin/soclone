@@ -4,71 +4,71 @@
 {% block bodyclass %}questions{% endblock %}
 
 {% block extrahead %}
-  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/prettify.css" media="screen">
-  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/textarearesizer.css" media="screen">
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/wmd/wmd.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/typewatch-2.0.0.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/textarearesizer-1.0.4.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/prettify.js"></script>
-  <script type="text/javascript">
-  $(function()
-  {
-      $("#preview-button").hide();
-      $("#id_text").typeWatch({highlight: false, wait: 3000,
-                               captureLength: 5, callback: SOClone.styleCode});
-      $("#id_text:not(.processed)").TextAreaResizer();
-  });
-  </script>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/prettify.css" media="screen">
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/textarearesizer.css" media="screen">
+<script type="text/javascript" src="{{ MEDIA_URL }}js/wmd/wmd.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/typewatch-2.0.0.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/textarearesizer-1.0.4.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/prettify.js"></script>
+<script type="text/javascript">
+$(function()
+{
+    $("#preview-button").hide();
+    $("#id_text").typeWatch({highlight: false, wait: 3000,
+                             captureLength: 5, callback: SOClone.styleCode});
+    $("#id_text:not(.processed)").TextAreaResizer();
+});
+</script>
 {% endblock %}
 
 {% block pageheader_title %}{{ block.super }} [<a href="{{ answer.get_absolute_url }}">Return to Answer</a>]{% endblock %}
 
 {% block main %}
-    <form id="answer-form" method="POST" action="{% url edit_answer answer.id %}">
-      <div class="form-item">
-        {{ revision_form.revision.label_tag }}
-        {% if revision_form.revision.errors %}{{ revision_form.revision.errors.as_ul }}{% endif %}
-        {% field revision_form.revision style="width: 575px" %} <input type="submit" name="select_revision" value="Select">
-      </div>
-      <div class="form-item">
-        {% if form.text.errors %}{{ form.text.errors.as_ul }}{% endif %}
-        <div class="resizable-textarea">
-        {% field form.text %}
-        </div>
-        {% if form.wiki %}{% field form.wiki %} {{ form.wiki.label_tag }}{% endif %}
-      </div>
-      <div class="form-item">
-        <div class="wmd-preview">{% if preview %}{{ preview }}{% endif %}</div>
-      </div>
-      <div class="form-item">
-        {{ form.summary.label_tag }}
-        {% if form.summary.errors %}{{ form.summary.errors.as_ul }}{% endif %}
-        {% field form.summary size="60" %}
-        <p class="help">Briefly describe your changes (corrected spelling, fixed grammar, improved formatting etc.)</p>
-      </div>
-      <div class="form-submit">
-        <input type="submit" name="submit" value="Save Your Edits">
-        <input type="submit" name="preview" id="preview-button" value="Preview">
-      </div>
-    </form>
+<form id="answer-form" method="POST" action="{% url edit_answer answer.id %}">
+  <div class="form-item">
+    {{ revision_form.revision.label_tag }}
+    {% if revision_form.revision.errors %}{{ revision_form.revision.errors.as_ul }}{% endif %}
+    {% field revision_form.revision style="width: 575px" %} <input type="submit" name="select_revision" value="Select">
+  </div>
+  <div class="form-item">
+    {% if form.text.errors %}{{ form.text.errors.as_ul }}{% endif %}
+    <div class="resizable-textarea">
+    {% field form.text %}
+    </div>
+    {% if form.wiki %}{% field form.wiki %} {{ form.wiki.label_tag }}{% endif %}
+  </div>
+  <div class="form-item">
+    <div class="wmd-preview">{% if preview %}{{ preview }}{% endif %}</div>
+  </div>
+  <div class="form-item">
+    {{ form.summary.label_tag }}
+    {% if form.summary.errors %}{{ form.summary.errors.as_ul }}{% endif %}
+    {% field form.summary size="60" %}
+    <p class="help">Briefly describe your changes (corrected spelling, fixed grammar, improved formatting etc.)</p>
+  </div>
+  <div class="form-submit">
+    <input type="submit" name="submit" value="Save Your Edits">
+    <input type="submit" name="preview" id="preview-button" value="Preview">
+  </div>
+</form>
 {% endblock %}
 
 {% block sidebar %}
-    <div class="module">
-      <h4>Good Edits</h4>
-      <p>Fix grammatical or spelling errors.</p>
-      <p>Clarify meaning without changing it.</p>
-      <p>Correct minor mistakes.</p>
-      <p>Add related resources or links.</p>
-      <p><em>Always</em> respect the original author.</p>
-    </div>
-    <div class="module">
-      <h4>Markdown Quick Reference</h4>
-      <p>indent <code>code</code> by 4 spaces</p>
-      <p>don't want colorization? Use &lt;pre&gt;</p>
-      <p>to linebreak use 2 spaces at end</p>
-      <p>&gt; blockquote</p>
-      <p>backtick escapes <code>`like this`</code></p>
-      <p>&lt;http://foo.com&gt;<br>[foo](http://foo.com)<br>&lt;a href="http://foo.com"&gt;foo&lt;/a&gt;</p>
-    </div>
+<div class="module">
+  <h4>Good Edits</h4>
+  <p>Fix grammatical or spelling errors.</p>
+  <p>Clarify meaning without changing it.</p>
+  <p>Correct minor mistakes.</p>
+  <p>Add related resources or links.</p>
+  <p><em>Always</em> respect the original author.</p>
+</div>
+<div class="module">
+  <h4>Markdown Quick Reference</h4>
+  <p>indent <code>code</code> by 4 spaces</p>
+  <p>don't want colorization? Use &lt;pre&gt;</p>
+  <p>to linebreak use 2 spaces at end</p>
+  <p>&gt; blockquote</p>
+  <p>backtick escapes <code>`like this`</code></p>
+  <p>&lt;http://foo.com&gt;<br>[foo](http://foo.com)<br>&lt;a href="http://foo.com"&gt;foo&lt;/a&gt;</p>
+</div>
 {% endblock %}

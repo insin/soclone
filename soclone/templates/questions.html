@@ -1,60 +1,61 @@
 {% extends "base_2col.html" %}
-{% load soclone_tags %}
-{% load humanize %}
+{% load soclone_tags humanize %}
 
 {% block bodyclass %}questions{% endblock %}
 
 {% block pageheader_content %}
-      <div class="tabs">{% for view in question_views %}
-        <a href="?sort={{ view.id }}" title="{{ view.tab_tooltip }}"{% ifequal view current_view %} class="active"{% endifequal %}>{{ view.tab_title }}</a>
-      {% endfor %}</div>
+<div class="tabs">
+{% for view in question_views %}
+  <a href="?sort={{ view.id }}" title="{{ view.tab_tooltip }}"{% ifequal view current_view %} class="active"{% endifequal %}>{{ view.tab_title }}</a>
+{% endfor %}
+</div>
 {% endblock %}
 
 {% block main %}
-    {% for question in questions %}
-    <div id="questions">
-      <div class="question-summary">
-        <div class="stats">
-          <div class="votes"><strong>{{ question.score }}</strong> vote{{ question.score|pluralize }}</div>
-          <div class="status {% if not question.answer_count %}un{% endif %}answered{% if question.answered %}-accepted{% endif %}">
-            <strong>{{ question.answer_count }}</strong> answer{{ question.answer_count|pluralize }}
+{% for question in questions %}
+<div id="questions">
+  <div class="question-summary">
+    <div class="stats">
+      <div class="votes"><strong>{{ question.score }}</strong> vote{{ question.score|pluralize }}</div>
+      <div class="status {% if not question.answer_count %}un{% endif %}answered{% if question.answered %}-accepted{% endif %}">
+        <strong>{{ question.answer_count }}</strong> answer{{ question.answer_count|pluralize }}
+      </div>
+      <div class="views">{{ question.view_count }} view{{ question.view_count|pluralize }}</div>
+    </div>
+    <div class="summary">
+      <h3><a href="{{ question.get_absolute_url }}">{{ question.title }}{% if question.closed %} [closed]{% endif %}</a></h3>
+      <div class="excerpt">
+        <p>{{ question.summary }} &hellip;</p>
+        <div class="meta">
+          <div class="user">
+            {% question_list_user_details question current_view %}
           </div>
-          <div class="views">{{ question.view_count }} view{{ question.view_count|pluralize }}</div>
         </div>
-        <div class="summary">
-          <h3><a href="{{ question.get_absolute_url }}">{{ question.title }}{% if question.closed %} [closed]{% endif %}</a></h3>
-          <div class="excerpt">
-            <p>{{ question.summary }} &hellip;</p>
-            <div class="meta">
-              <div class="user">
-                {% question_list_user_details question current_view %}
-              </div>
-            </div>
-            <div class="tags">
-              {% for tagname in question.tagname_list %}
-              <a href="{% url tag tagname %}" class="tag" title="show questions tagged '{{ tagname }}'" rel="tag">{{ tagname }}</a>
-              {% endfor %}
-            </div>
-          </div>
+        <div class="tags">
+          {% for tagname in question.tagname_list %}
+          <a href="{% url tag tagname %}" class="tag" title="show questions tagged '{{ tagname }}'" rel="tag">{{ tagname }}</a>
+          {% endfor %}
         </div>
       </div>
     </div>
-    {% endfor %}
+  </div>
+</div>
+{% endfor %}
 
-    {% if page.has_other_pages %}
-    <div class="pagination">
-      {% pager page sort=current_view.id %}
-      {% sizer page sort=current_view.id %}
-    </div>
-    {% endif %}
+{% if page.has_other_pages %}
+<div class="pagination">
+  {% pager page sort=current_view.id %}
+  {% sizer page sort=current_view.id %}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block sidebar %}
-    <div class="module">
-      <p>You're browsing through all</p>
-      <div class="question-count">{{ page.paginator.count|intcomma }}</div>
-      <p>{% block question_view_description %}questions{% endblock %}</p>
-      <p>{{ current_view.description|safe }}</p>
-      <p>You can narrow down the questions you're looking for by <a href="{% url tags %}">tags</a> or <a href="{% url search %}">search</a></p>
-    </div>
+<div class="module">
+  <p>You're browsing through all</p>
+  <div class="question-count">{{ page.paginator.count|intcomma }}</div>
+  <p>{% block question_view_description %}questions{% endblock %}</p>
+  <p>{{ current_view.description|safe }}</p>
+  <p>You can narrow down the questions you're looking for by <a href="{% url tags %}">tags</a> or <a href="{% url search %}">search</a></p>
+</div>
 {% endblock %}

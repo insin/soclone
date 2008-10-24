@@ -1,18 +1,18 @@
-        <div id="question-comments-container-{{ question.id }}" class="comments-container">
-          {% for comment in comments %}
-          <div class="comment" id="question-comment-{{ comment.id }}">
-          {{ comment.comment }} - <a href="{% url user comment.user_id %}" class="comment-user">{{ comment.user_username }}</a>
-          <span class="comment-date">({{ comment.added_at|timesince }} ago)</span>
-          {% if user|can_delete_comment:comment %}
-          <a href="{% url delete_comment comment.id %}" class="comment-delete" id="comment-delete-{{ comment.id }}" title="remove this comment">
-            <img src="{{ MEDIA_ROOT }}img/close-small.png" alt="remove">
-          </a>
-          {% endif %}
-          </div>
-          {% endfor %}
-          <form class="comment" id="question-add-comment-{{ question.id }}" action="{% url add_question_commment question.id %}" method="POST">
-            <div>
-              {{ comment_form.comment }} <input type="submit" value="Add Comment">
-            </div>
-          </form>
-        </div>
+<div id="question-comments-container-{{ question.id }}" class="comments-container">
+  {% for comment in comments %}
+  <div class="comment" id="question-comment-{{ comment.id }}">
+  {{ comment.comment }} - <a href="{% url user comment.user_id %}" class="comment-user">{{ comment.user_username }}</a>
+  <span class="comment-date">({{ comment.added_at|timesince }} ago)</span>
+  {% if user|can_delete_comment:comment %}
+  <a href="{% url delete_comment comment.id %}" class="comment-delete" id="comment-delete-{{ comment.id }}" title="remove this comment">
+    <img src="{{ MEDIA_ROOT }}img/close-small.png" alt="remove">
+  </a>
+  {% endif %}
+  </div>
+  {% endfor %}
+  <form class="comment" id="question-add-comment-{{ question.id }}" action="{% url add_question_commment question.id %}" method="POST">
+    <div>
+      {{ comment_form.comment }} <input type="submit" value="Add Comment">
+    </div>
+  </form>
+</div>
