@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <title>{% block fulltitle %}{% if title %}{{ title }} - {% endif %}SOClone{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/reset.css" media="screen">
   <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/soclone.css" media="screen">
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/soclone.js"></script>
@@ -40,6 +41,7 @@
           </form>
         </div>
       </div>
+      <p id="bugs-features">Found a bug? Want to make a feature request? <a href="http://code.google.com/p/soclone/issues/">http://code.google.com/p/soclone/issues/</a></p>
       <div id="nav">
         <ul>
           <li id="nav-questions"><a href="{% url questions %}">Questions</a></li>

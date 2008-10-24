@@ -1,7 +1,7 @@
 {% extends "base_2col.html" %}
 {% load html soclone_tags %}
 
-{% block bodyclass %}questions{% endblock %}
+{% block bodyclass %}questions question{% endblock %}
 
 {% block extrahead %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/prettify.css" media="screen">
@@ -159,12 +159,14 @@ $(function()
   <dl>
     <dt>asked</dt>
     <dd>{{ question.added_at|timesince }} ago</dd>
-    {% if question.answered %}
-    <dt>it was answered in</dt>
-    <dd>>{{ question.added_at|timesince:question.answered_at }}</dd>
-    {% endif %}
-    <dt>latest activity was</dt>
-    <dd>{{ question.latest_activity_at|timesince }} ago</dd>
+    <dt>viewed</dt>
+    <dd>{{ question.view_count }} time{{ question.view_count|pluralize }}</dd>
+    <dt>latest activity</dt>
+    <dd>{{ question.last_activity_at|timesince }} ago</dd>
   </dl>
+</div>
+
+<div class="module related-questions">
+  <h4>Related</h4>
 </div>
 {% endblock %}

@@ -414,6 +414,10 @@ def question_revisions(request, question_id):
         'revisions': revisions,
     }, context_instance=RequestContext(request))
 
+def close_question(request, question_id):
+    """Closes or reopens a question."""
+    raise NotImplementedError
+
 def delete_question(request, question_id):
     """Deletes or undeletes a Question."""
     raise NotImplementedError

@@ -7,8 +7,8 @@ from django.template.defaultfilters import slugify
 from soclone.forms.fields import TagnameField
 from soclone.forms.widgets import MarkdownTextArea
 
-RESERVED_TITLES = (u'answer', u'edit', u'delete', u'favourite', u'comment',
-                   u'flag', u'vote')
+RESERVED_TITLES = (u'answer', u'close', u'edit', u'delete', u'favourite',
+                   u'comment', u'flag', u'vote')
 
 WIKI_CHECKBOX_LABEL = u'community owned wiki question'
 

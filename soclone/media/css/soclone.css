@@ -1,0 +1,194 @@
+/* Layout ------------------------------------------------------------------- */
+
+#container { width: 950px; margin: 0 auto; }
+#header { overflow: hidden; }
+  #logo { width: 260px; float: left; }
+  #header-content { float: right; width: 690px; overflow: hidden; }
+  #top-bar { overflow: hidden; }
+  #header-links { float: left; }
+  #header-search { float: right; }
+  #bugs-features { margin: .5em 0; }
+  #nav { clear: both; overflow: hidden; }
+    #nav li { float: left; margin-right: 7px; }
+    #nav a { display: block; padding: 6px 15px; text-decoration: none; }
+    #nav #nav-ask-question { float: right; margin-right: 0; }
+
+#pageheader { border-bottom-width: 1px; border-bottom-style: solid;
+              overflow: hidden; margin-bottom: 10px; }
+  #pageheader h2 { float: left; }
+
+div.tabs { float: right; }
+  div.tabs a { float: left; display: block; margin: 0 8px; border-width: 1px;
+               border-style: solid; }
+
+#content { overflow: hidden; }
+#main { float: left; margin-bottom: 40px; width: 671px; }
+
+#sidebar { float: right; margin-bottom: 60px; width: 264px; }
+
+div.module { margin-bottom: 22px; padding: 10px; }
+  div.module h4 { padding-bottom: 7px; }
+  div.module p { margin-bottom: 0.5em; }
+
+div.form-item { padding: 10px 0 15px; position: relative; }
+  div.form-item label { display: block; padding-bottom: 3px; }
+  div.form-item p.help { margin-top: 4px; margin-bottom: 4px; }
+
+#footer { border-top-width: 7px; border-top-style: solid; clear: both;
+          margin-top: 30px; overflow: hidden; padding: 15px; }
+
+.reputation-score { margin-right: 2px; }
+.badge1, .badge2, .badge3 { margin-left: 3px; }
+.badgecount { padding-left: 1px; }
+
+.badge { border-width: 1px; border-style: solid; margin: 0 3px 3px 0;
+         padding: 4px 8px 4px 3px; }
+
+.wmd-preview { border-width: 2px; border-style: dotted; padding: 3px;
+               width: 645px; }
+
+a.tag { border-width: 0 1px 1px 0; border-style: solid; margin: 2px 2px 2px 0;
+        padding: 3px 4px; }
+
+/* Question list page */
+div.question-summary { overflow: hidden; }
+div.stats { text-align: center; float: left; margin: 0 7px;
+            padding: 4px 14px 0 7px; width: 58px; }
+div.votes strong { display: block; }
+div.stats div.views { margin: 7px -7px 0; }
+
+/* Question page */
+#question { overflow: hidden; }
+  #question div.content, #answers div.content { margin-left: 60px; }
+  #question div.controls { float: left; }
+  #question div.users { float: right; }
+
+div.vote { text-align: center; width: 60px; float: left; }
+div.vote div.views strong { display: block; }
+
+div.meta { overflow: hidden; }
+
+#answer-header { border-bottom-width: 1px; border-bottom-style: solid;
+                 overflow: hidden; margin-bottom: 10px; }
+  #answer-header h4 { float: left; }
+
+div.answer { overflow: hidden; border-bottom-width: 1px;
+             border-bottom-style: dotted; padding: 20px 0; }
+  div.answer div.controls { float: left; }
+  div.answer div.users { float: right; }
+
+body.question #main { width: 710px; }
+body.question #sidebar { width: 220px; }
+.question-sidebar dd { margin-bottom: .5em; }
+
+/* Revision pages */
+div.revision .header { overflow: hidden; }
+div.revision .revision-number { float: left; }
+div.revision .controls { float: left; }
+div.revision .revision-author { float: right; }
+
+/* Tags page. */
+#tags { overflow: hidden; }
+#tags div.tag-lists { overflow: auto; }
+#tags div.tag-list { float: left; margin-right: 10px; }
+
+/* Badges page */
+.badge-legend { margin-bottom: 5px; }
+
+/* Type --------------------------------------------------------------------- */
+
+body { font-family: arial, sans-serif; }
+#nav a { font-weight: bold; }
+
+div.module h4 { font-size: 110%; line-height: 1.4em; }
+div.module p { line-height: 1.3em; }
+
+div.form-item label { font-size: 110%; font-weight: bold; }
+
+.reputation-score { font-size: 120%; font-weight: bold; }
+.badge1, .badge2, .badge3 { font-size: 120%; }
+
+.badge { line-height: 1.9em; }
+a.badge { text-decoration: none; }
+
+a.tag { font-size: 90%; line-height: 2.2em; text-decoration: none;
+        white-space: nowrap; }
+
+/* Question list page */
+div.votes strong { font-size: 240%; }
+div.status strong { font-size: 140%; }
+div.question-count { font-size: 350%; font-weight: bold; }
+
+/* Question page */
+div.vote span.score { font-size: 240%; font-weight: bold; }
+div.vote div.views { font-size: 85%; }
+
+.question-sidebar dd { font-size: 120%; }
+
+/* Revision pages */
+del.diff, del.diff * { text-decoration: none; }
+ins.diff, ins.diff * { text-decoration: none; }
+
+div.revision .revision-number { font-size: 300%; line-height: 76px; }
+
+/* Colour ------------------------------------------------------------------- */
+
+#nav li { background-color: #777; }
+#nav a { color: #fff; }
+#nav a: hover { background-color: #f90; }
+#bugs-features { color: #e00; }
+
+#pageheader { border-bottom-color: #666; }
+
+div.tabs a { border-color: #eee; }
+
+div.module { background-color: #eee; }
+  div.module h4 { color: #444; }
+
+div.form-item label { color: #333; }
+div.form-item p.help { color: #777; }
+
+#footer { background-color: #777; border-top-color: #000; }
+
+.reputation-score { color: #333; }
+.badge1 { color: #fc0; }
+.badge2 { color: #c0c0c0; }
+.badge3 { color: #c90;  }
+.badgecount { color: #808185; }
+
+.badge { background-color: #333; border-color: #333; color: #fff; }
+
+.wmd-preview { background-color: #e0eaf1; border-color: #fff; }
+
+a.tag { color: #3e6d8e; background-color: #e0eaf1; border-bottom-color: #3e6d8e;
+        border-right-color: #7f9fb6; }
+a.tag: hover { color: #e0eaf1; background-color: #3e6d8e;
+              border-bottom-color: #37607d; border-right-color: #37607d;  }
+
+body.questions #nav-questions a,
+body.tags #nav-tags a,
+body.users #nav-users a,
+body.badges #nav-badges a,
+body.unanswered #nav-unanswered a,
+body.ask-question #nav-ask-question a { background-color: #f90; }
+
+/* Question list page */
+div.stats { background: #eee url(../img/stats-arrow.gif) no-repeat scroll right top; }
+div.status { color: #fff; }
+  div.unanswered { background-color: #9a4444; }
+  div.answered { background-color: #75845C; }
+  div.answered-accepted { background-color: #75845c; }
+div.stats div.views { background-color: #fff; color: #555; }
+div.question-count { color: #808185; }
+
+/* Question page */
+div.vote { color: #808080; }
+#answer-header { border-bottom-color: #666; }
+div.answer { border-bottom-color:  #666; }
+
+/* Revision pages */
+del.diff, del.diff * { background-color: #ff9797; }
+ins.diff, ins.diff * { background-color: #97ff97; }
+
+div.revision .header { background-color: #eee; }
+div.revision .summary { background-color: #fffe9b; color: #333; }
