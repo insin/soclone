@@ -6,6 +6,7 @@ from django.template.defaultfilters import slugify
 
 from soclone.forms.fields import TagnameField
 from soclone.forms.widgets import MarkdownTextArea
+from soclone.models import Question
 
 RESERVED_TITLES = (u'answer', u'close', u'edit', u'delete', u'favourite',
                    u'comment', u'flag', u'vote')
@@ -109,3 +110,6 @@ class EditAnswerForm(forms.Form):
 
 class CommentForm(forms.Form):
     comment = forms.CharField(min_length=10, max_length=300, widget=forms.Textarea(attrs={'maxlength': 300, 'cols': 70, 'rows': 2}))
+
+class CloseQuestionForm(forms.Form):
+    reason = forms.ChoiceField(choices=Question.CLOSE_REASONS)

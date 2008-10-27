@@ -27,31 +27,7 @@ from soclone.utils import populate_foreign_key_caches
 
 markdowner = Markdown()
 
-ANSWER_SORT = {
-    'votes': ('-score', '-added_at'),
-    'newest': ('-added_at',),
-    'oldest': ('added_at',),
-}
-
-DEFAULT_ANSWER_SORT = 'votes'
-
 AUTO_WIKI_ANSWER_COUNT = 30
-
-TAG_SORT = {
-    'popular': ('-use_count', 'name'),
-    'name': ('name',),
-}
-
-DEFAULT_TAG_SORT = 'popular'
-
-USER_SORT = {
-    'reputation': ('-reputation', '-date_joined'),
-    'newest': ('-date_joined',),
-    'oldest': ('date_joined',),
-    'name': ('username',),
-}
-
-DEFAULT_USER_SORT = 'reputation'
 
 def get_questions_per_page(user):
     if user.is_authenticated():
@@ -113,6 +89,14 @@ def questions(request):
 def unanswered(request):
     """Unanswered Questions list."""
     return _question_list(request, unanswered_question_views, 'unanswered.html')
+
+ANSWER_SORT = {
+    'votes': ('-score', '-added_at'),
+    'newest': ('-added_at',),
+    'oldest': ('added_at',),
+}
+
+DEFAULT_ANSWER_SORT = 'votes'
 
 def question(request, question_id):
     """Displays a Question."""
@@ -318,9 +302,9 @@ def _edit_question(request, question):
                                 diff.generate_question_revision_summary(
                                     latest_revision, revision)
                         revision.save()
-                        # TODO 5 body edits by the asker = automatic wiki mode
+                        # TODO 5 body edits by the author = automatic wiki mode
                         # TODO 4 individual editors = automatic wiki mode
-                        # TODO Badges related to retagging / Tag usage
+                        # TODO Badges related to Tag usage
                         # TODO Badges related to editing Questions
                     return HttpResponseRedirect(question.get_absolute_url())
     else:
@@ -415,8 +399,54 @@ def question_revisions(request, question_id):
     }, context_instance=RequestContext(request))
 
 def close_question(request, question_id):
-    """Closes or reopens a question."""
-    raise NotImplementedError
+    """Closes or reopens a Question based on its current closed status."""
+    question = get_object_or_404(Question, id=question_id)
+    if not auth.can_close_question(request.user, question):
+        raise Http404
+    if not question.closed:
+        return _close_question(request, question)
+    else:
+        return _reopen_question(request, question)
+
+def _close_question(request, question):
+    """Closes a Question."""
+    if request.method == 'POST':
+        form = CloseQuestionForm(request.POST)
+        if form.is_valid():
+            Question.objects.filter(id=question.id).update(closed=True,
+                closed_by=request.user, closed_at=datetimte.datetime.now(),
+                close_reason=form.cleaned_data['reason'])
+            if request.is_ajax():
+                return JsonResponse({'success': True})
+            else:
+                return HttpResponseRedirect(question.get_absolute_url())
+        elif request.is_ajax():
+            return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        if request.is_ajax():
+            raise Http404
+        form = CloseQuestionForm()
+    return render_to_response('close_question.html', {
+        'title': u'Close Question',
+        'question': question,
+        'form': form,
+    }, context_instance=RequestContext(request))
+
+def _reopen_question(request, question):
+    """Reopens a Question."""
+    if request.method == 'POST' and 'reopen' in request.POST:
+        Question.objects.filter(id=question.id).update(closed=False,
+            closed_by=None, closed_at=None, close_reason=None)
+        if request.is_ajax():
+            return JsonResponse({'success': True})
+        else:
+            return HttpResponseRedirect(question.get_absolute_url())
+    if request.is_ajax():
+        raise Http404
+    return render_to_response('reopen_question.html', {
+        'title': u'Reopen Question',
+        'question': question,
+    }, context_instance=RequestContext(request))
 
 def delete_question(request, question_id):
     """Deletes or undeletes a Question."""
@@ -646,6 +676,13 @@ def delete_comment(request, comment_id):
     """Deletes a Comment permenantly."""
     raise NotImplementedError
 
+TAG_SORT = {
+    'popular': ('-use_count', 'name'),
+    'name': ('name',),
+}
+
+DEFAULT_TAG_SORT = 'popular'
+
 def tags(request):
     """Searchable Tag list."""
     sort_type = request.GET.get('sort', DEFAULT_TAG_SORT)
@@ -668,6 +705,15 @@ def tags(request):
 def tag(request, tag_name):
     """Displayed Questions for a Tag."""
     raise NotImplementedError
+
+USER_SORT = {
+    'reputation': ('-reputation', '-date_joined'),
+    'newest': ('-date_joined',),
+    'oldest': ('date_joined',),
+    'name': ('username',),
+}
+
+DEFAULT_USER_SORT = 'reputation'
 
 def users(request):
     """Searchable User list."""
@@ -702,7 +748,7 @@ def badges(request):
     }, context_instance=RequestContext(request))
 
 def badge(request, badge_id):
-    """Displays a Badge and the Users who have acheived it."""
+    """Displays a Badge and any Users who have recently been awarded it."""
     badge = get_object_or_404(Badge, id=badge_id)
     awarded_to = badge.awarded_to.all().order_by('-award__awarded_at').values(
         'id', 'username', 'reputation', 'gold', 'silver', 'bronze')[:500]
