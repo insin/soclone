@@ -58,6 +58,18 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 )
 
+# List of processors used by RequestContext to populate the context.
+# Each one should be a callable that takes the request object as its
+# only parameter and returns a dictionary to add to the context.
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'soclone.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+)
+
+# List of middleware classes to use.  Order is important; in the request phase,
+# this middleware classes will be applied in the order given, and in the
+# response phase the middleware will be applied in reverse order.
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
