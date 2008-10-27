@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load html %}
+
+{% block bodyclass %}questions{% endblock %}
+
+{% block content %}
+<p>You are about to close the question <a href="{{ question.absolute_url }}">{{ question.title }}</a>.</p>
+<form id="close-question" action="{% url close_question question.id %}" method="POST">
+  <div class="form-item">
+    {{ form.reason.label_tag }}
+    {% if form.reason.errors %}{{ form.reason.errors.as_ul }}{% endif %}
+    {% field form.reason %}
+    <p class="help">Provide a reason for closing this question</p>
+  </div>
+  <div class="form-submit">
+    <input type="submit" name="close" value="Close Question">
+    <a href="{{ question.get_absolute_url }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

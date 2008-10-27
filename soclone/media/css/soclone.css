@@ -58,10 +58,12 @@ div.votes strong { display: block; }
 div.stats div.views { margin: 7px -7px 0; }
 
 /* Question page */
-#question { overflow: hidden; }
+#question { overflow: hidden; margin-bottom: 1em; }
   #question div.content, #answers div.content { margin-left: 60px; }
   #question div.controls { float: left; }
   #question div.users { float: right; }
+
+h2.close-reason { padding: 1em; margin: 1em 0; text-align: center; }
 
 div.vote { text-align: center; width: 60px; float: left; }
 div.vote div.views strong { display: block; }
@@ -113,6 +115,8 @@ a.badge { text-decoration: none; }
 
 a.tag { font-size: 90%; line-height: 2.2em; text-decoration: none;
         white-space: nowrap; }
+
+.warning { color: #600; }
 
 /* Question list page */
 div.votes strong { font-size: 240%; }
@@ -185,6 +189,7 @@ div.question-count { color: #808185; }
 div.vote { color: #808080; }
 #answer-header { border-bottom-color: #666; }
 div.answer { border-bottom-color:  #666; }
+h2.close-reason { background-color: #eee; }
 
 /* Revision pages */
 del.diff, del.diff * { background-color: #ff9797; }

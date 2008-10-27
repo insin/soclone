@@ -72,6 +72,14 @@ $(function()
   </div>
 </div>
 
+{% if question.closed %}
+<h2 class="close-reason">
+  Question <span class="warning">closed</span> as "{{ question.get_close_reason_display }}"
+  by <a href="{% url user question.closed_by.id %}{{ question.closed_by.username }}/">{{ question.closed_by.username }}</a>
+  {{ question.closed_at|timesince }} ago
+</h2>
+{% endif %}
+
 {% if page.has_other_pages %}
 <div class="pagination">
   {% pager page sort=answer_sort %}
@@ -131,6 +139,7 @@ $(function()
 </div>
 {% endif %}
 
+{% if not question.closed %}
 <form id="answer-form" method="POST" action="{% url add_answer question.id %}">
   <div class="form-item">
     <div class="resizable-textarea">
@@ -146,6 +155,7 @@ $(function()
     <input type="submit" name="preview" id="preview-button" value="Preview">
   </div>
 </form>
+{% endif %}
 {% endblock %}
 
 {% block sidebar %}

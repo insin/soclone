@@ -16,8 +16,9 @@ import htmldiff
 from markdown2 import Markdown
 from soclone import auth
 from soclone import diff
-from soclone.forms import (AddAnswerForm, AskQuestionForm, CommentForm,
-    EditAnswerForm, EditQuestionForm, RetagQuestionForm, RevisionForm)
+from soclone.forms import (AddAnswerForm, AskQuestionForm, CloseQuestionForm,
+    CommentForm, EditAnswerForm, EditQuestionForm, RetagQuestionForm,
+    RevisionForm)
 from soclone.http import JsonResponse
 from soclone.models import (Answer, AnswerRevision, Badge, Comment, Question,
     QuestionRevision, Tag)
@@ -124,8 +125,11 @@ def question(request, question_id):
          fields=('username', 'gravatar', 'reputation', 'gold', 'silver',
                  'bronze'))
 
+    title = question.title
+    if question.closed:
+        title = '%s [closed]' % title
     return render_to_response('question.html', {
-        'title': question.title,
+        'title': title,
         'question': question,
         'tags': question.tags.all(),
         'answers': page.object_list,
@@ -410,11 +414,11 @@ def close_question(request, question_id):
 
 def _close_question(request, question):
     """Closes a Question."""
-    if request.method == 'POST':
+    if request.method == 'POST' and 'close' in request.POST:
         form = CloseQuestionForm(request.POST)
         if form.is_valid():
             Question.objects.filter(id=question.id).update(closed=True,
-                closed_by=request.user, closed_at=datetimte.datetime.now(),
+                closed_by=request.user, closed_at=datetime.datetime.now(),
                 close_reason=form.cleaned_data['reason'])
             if request.is_ajax():
                 return JsonResponse({'success': True})
