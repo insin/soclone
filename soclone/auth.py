@@ -4,17 +4,19 @@ Authorisation related functions.
 The actions a User is authorised to perform are dependent on their reputation
 and superuser status.
 """
-VOTE_UP = 15
-FLAG_OFFENSIVE = 15
-LEAVE_COMMENTS = 50
-VOTE_DOWN = 100
-CLOSE_OWN_QUESTIONS = 250
-RETAG_OTHER_QUESTIONS = 500
+VOTE_UP                   = 15
+FLAG_OFFENSIVE            = 15
+POST_IMAGES               = 15
+LEAVE_COMMENTS            = 50
+VOTE_DOWN                 = 100
+CLOSE_OWN_QUESTIONS       = 250
+RETAG_OTHER_QUESTIONS     = 500
 EDIT_COMMUNITY_WIKI_POSTS = 750
-EDIT_OTHER_POSTS = 2000
-DELETE_COMMENTS = 2000
-CLOSE_OTHER_QUESTIONS = 3000
-LOCK_QUESTIONS = 4000
+EDIT_OTHER_POSTS          = 2000
+DELETE_COMMENTS           = 2000
+VIEW_OFFENSIVE_FLAGS      = 2000
+CLOSE_OTHER_QUESTIONS     = 3000
+LOCK_POSTS                = 4000
 
 def can_vote_up(user):
     """Determines if a User can vote Questions and Answers up."""
@@ -60,6 +62,12 @@ def can_delete_comment(user, comment):
         user.reputation >= DELETE_COMMENTS or
         user.is_superuser)
 
+def can_view_offensive_flags(user):
+    """Determines if a User can view offensive flag counts."""
+    return user.is_authenticated() and (
+        user.reputation >= VIEW_OFFENSIVE_FLAGS or
+        user.is_superuser)
+
 def can_close_question(user, question):
     """Determines if a User can close the given Question."""
     return user.is_authenticated() and (
@@ -68,8 +76,8 @@ def can_close_question(user, question):
         user.reputation >= CLOSE_OTHER_QUESTIONS or
         user.is_superuser)
 
-def can_lock_questions(user):
-    """Determines if a User can lock Questions."""
+def can_lock_posts(user):
+    """Determines if a User can lock Questions or Answers."""
     return user.is_authenticated() and (
-        user.reputation >= LOCK_QUESTIONS or
+        user.reputation >= LOCK_POSTS or
         user.is_superuser)

@@ -680,14 +680,14 @@ def vote(request, model, object_id):
         raise Http404
 
     vote_type = request.POST.get('type', None)
-    if vote_type == 'up':
+    if vote_type == 'up' and auth.can_vote_up(request.user):
         vote_type = Vote.VOTE_UP
-    elif vote_type == 'down':
+    elif vote_type == 'down' and auth.can_vote_down(request.user):
         vote_type = Vote.VOTE_DOWN
     else:
         raise Http404
 
-    obj = get_object_or_404(model, id=object_id, deleted=False)
+    obj = get_object_or_404(model, id=object_id, deleted=False, locked=False)
     content_type = ContentType.objects.get_for_model(model)
     try:
         existing_vote = Vote.objects.get(content_type=content_type,
@@ -707,6 +707,8 @@ def vote(request, model, object_id):
         else:
             existing_vote.vote = vote_type
             existing_vote.save()
+
+    # TODO Reputation management
 
     if request.is_ajax():
         return JsonResponse({

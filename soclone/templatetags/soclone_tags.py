@@ -85,12 +85,16 @@ def can_delete_comment(user, comment):
     return auth.can_delete_comment(user, comment)
 
 @register.filter
+def can_view_offensive_flags(user):
+    return auth.can_view_offensive_flags(user)
+
+@register.filter
 def can_close_question(user, question):
     return auth.can_close_question(user, question)
 
 @register.filter
-def can_lock_questions(user):
-    return auth.can_lock_questions(user)
+def can_lock_posts(user):
+    return auth.can_lock_posts(user)
 
 ##################
 # Inclusion tags #
