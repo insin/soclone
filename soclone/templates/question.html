@@ -25,14 +25,14 @@ $(function()
 <div id="question">
   <div class="vote">
     <form class="vote" id="question-up-{{ question.id }}" action="{% url vote_on_question question.id %}" method="POST">
-      <input type="image" name="up" id="question-uparrow-{{ question.id }}" src="{{ MEDIA_URL }}img/vote-arrow-up{% if vote and vote.is_upvote %}-on{% endif %}.png">
+      <input type="image" name="up" id="question-uparrow-{{ question.id }}" src="{{ MEDIA_URL }}img/vote-arrow-up{% if vote and vote.is_upvote %}-on{% endif %}.png" alt="{% if vote and vote.is_upvote %}Undo Up Vote{% else %}Vote Up{% endif %}">
     </form>
     <span class="score" id="question-score-{{ question.id }}">{{ question.score }}</span>
     <form class="vote" id="question-down-{{ question.id }}" action="{% url vote_on_question question.id %}" method="POST">
-      <input type="image" name="down" id="question-downarrow-{{ question.id }}" src="{{ MEDIA_URL }}img/vote-arrow-down{% if vote and vote.is_downvote %}-on{% endif %}.png">
+      <input type="image" name="down" id="question-downarrow-{{ question.id }}" src="{{ MEDIA_URL }}img/vote-arrow-down{% if vote and vote.is_downvote %}-on{% endif %}.png" alt="{% if vote and vote.is_downvote %}Undo Down Vote{% else %}Vote Down{% endif %}">
     </form>
     <form class="favourite" id="question-favourite-{{ question.id }}" action="{% url favourite_question question.id %}" method="POST">
-      <input type="image" name="{% if favourite %}un{% endif %}favourite" id="question-star{{ question.id }}" src="{{ MEDIA_URL }}img/favourite{% if favourite %}-on{% endif %}.png">
+      <input type="image" id="question-star{{ question.id }}" src="{{ MEDIA_URL }}img/favourite{% if favourite %}-on{% endif %}.png" alt="{% if favourite %}Remove{% else %}Add{% endif %} Favourite">
     </form>
     <div class="views"><strong>{{ question.view_count }}</strong> view{{ question.view_count|pluralize }}</div>
   </div>
@@ -99,11 +99,11 @@ $(function()
   <div class="answer" id="answer-{{ answer.id }}">
     <div class="vote">
       <form class="vote" id="answer-up-{{ answer.id }}" action="{% url vote_on_answer answer.id %}" method="POST">
-        <input type="image" name="up" id="answer-uparrow-{{ answer.id }}" src="{{ MEDIA_URL }}img/vote-arrow-up{% if vote and vote.is_upvote %}-on{% endif %}.png">
+        <input type="image" name="up" id="answer-uparrow-{{ answer.id }}" src="{{ MEDIA_URL }}img/vote-arrow-up{% if vote and vote.is_upvote %}-on{% endif %}.png" alt="{% if vote and vote.is_upvote %}Undo Up Vote{% else %}Vote Up{% endif %}">
       </form>
       <span class="score" id="answer-score-{{ answer.id }}">{{ answer.score }}</span>
       <form class="vote" id="answer-down-{{ answer.id }}" action="{% url vote_on_answer answer.id %}" method="POST">
-        <input type="image" name="down" id="answer-downarrow-{{ answer.id }}" src="{{ MEDIA_URL }}img/vote-arrow-down{% if vote and vote.is_downvote %}-on{% endif %}.png">
+        <input type="image" name="down" id="answer-downarrow-{{ answer.id }}" src="{{ MEDIA_URL }}img/vote-arrow-down{% if vote and vote.is_downvote %}-on{% endif %}.png" alt="{% if vote and vote.is_downvote %}Undo Down Vote{% else %}Vote Down{% endif %}">
       </form>
     </div>
     <div class="content">

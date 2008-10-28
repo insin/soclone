@@ -20,8 +20,8 @@ from soclone.forms import (AddAnswerForm, AskQuestionForm, CloseQuestionForm,
     CommentForm, EditAnswerForm, EditQuestionForm, RetagQuestionForm,
     RevisionForm)
 from soclone.http import JsonResponse
-from soclone.models import (Answer, AnswerRevision, Badge, Comment, Question,
-    QuestionRevision, Tag)
+from soclone.models import (Answer, AnswerRevision, Badge, Comment,
+    FavouriteQuestion, Question, QuestionRevision, Tag)
 from soclone.questions import all_question_views, unanswered_question_views
 from soclone.shortcuts import get_page
 from soclone.utils import populate_foreign_key_caches
@@ -125,6 +125,12 @@ def question(request, question_id):
          fields=('username', 'gravatar', 'reputation', 'gold', 'silver',
                  'bronze'))
 
+    favourite = False
+    if (request.user.is_authenticated() and
+        len(FavouriteQuestion.objects.filter(user=request.user,
+                                             question=question).values('id'))):
+        favourite = True
+
     title = question.title
     if question.closed:
         title = '%s [closed]' % title
@@ -132,6 +138,7 @@ def question(request, question_id):
         'title': title,
         'question': question,
         'tags': question.tags.all(),
+        'favourite': favourite,
         'answers': page.object_list,
         'page': page,
         'answer_sort': answer_sort_type,
@@ -457,8 +464,25 @@ def delete_question(request, question_id):
     raise NotImplementedError
 
 def favourite_question(request, question_id):
-    """Adds or removes a favourite quesiton."""
-    raise NotImplementedError
+    """
+    Adds or removes a FavouriteQuestion.
+
+    Favouriting will not use a confirmation page, as it's an action which is
+    non-destructive and easily reversible.
+    """
+    if request.method != 'POST':
+        raise Http404
+
+    question = get_object_or_404(Question, id=question_id, deleted=False)
+    favourite, created = FavouriteQuestion.objects.get_or_create(
+        user=request.user, question=question)
+    if not created:
+        favourite.delete()
+
+    if request.is_ajax():
+        return JsonResponse({'success': True, 'favourited': created})
+    else:
+        return HttpResponseRedirect(question.get_absolute_url())
 
 def add_answer(request, question_id):
     """
