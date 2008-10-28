@@ -21,7 +21,7 @@ from soclone.forms import (AddAnswerForm, AskQuestionForm, CloseQuestionForm,
     RevisionForm)
 from soclone.http import JsonResponse
 from soclone.models import (Answer, AnswerRevision, Badge, Comment,
-    FavouriteQuestion, Question, QuestionRevision, Tag)
+    FavouriteQuestion, Question, QuestionRevision, Tag, Vote)
 from soclone.questions import all_question_views, unanswered_question_views
 from soclone.shortcuts import get_page
 from soclone.utils import populate_foreign_key_caches
@@ -113,7 +113,7 @@ def question(request, question_id):
     paginator = Paginator(Answer.objects.for_question(
                               question, request.user).order_by(*order_by),
                           AUTO_WIKI_ANSWER_COUNT)
-    # Save ourselves a COUNT() query
+    # Save ourselves a COUNT() query by using the denormalised count
     paginator._count = question.answer_count
     page = get_page(request, paginator)
     answers = page.object_list
@@ -125,10 +125,16 @@ def question(request, question_id):
          fields=('username', 'gravatar', 'reputation', 'gold', 'silver',
                  'bronze'))
 
+    # Look up vote status for the current user
+    question_vote, answer_votes = Vote.objects.get_for_question_and_answers(
+        request.user, question, page.object_list)
+
+    # Look up favourite status for the current user
     favourite = False
     if (request.user.is_authenticated() and
-        len(FavouriteQuestion.objects.filter(user=request.user,
-                                             question=question).values('id'))):
+        len(FavouriteQuestion.objects.filter(
+                user=request.user, question=question).values_list(
+                    'id', flat=True))):
         favourite = True
 
     title = question.title
@@ -137,12 +143,14 @@ def question(request, question_id):
     return render_to_response('question.html', {
         'title': title,
         'question': question,
-        'tags': question.tags.all(),
+        'question_vote': question_vote,
         'favourite': favourite,
         'answers': page.object_list,
+        'answer_votes': answer_votes,
         'page': page,
         'answer_sort': answer_sort_type,
         'answer_form': AddAnswerForm(),
+        'tags': question.tags.all(),
     }, context_instance=RequestContext(request))
 
 def question_comments(request, question, form=None):
@@ -665,8 +673,49 @@ def delete_answer(request, answer_id):
     raise NotImplementedError
 
 def vote(request, model, object_id):
-    """Vote on a Question or Answer."""
-    raise NotImplementedError
+    """
+    Vote on a Question or Answer.
+    """
+    if request.method != 'POST':
+        raise Http404
+
+    vote_type = request.POST.get('type', None)
+    if vote_type == 'up':
+        vote_type = Vote.VOTE_UP
+    elif vote_type == 'down':
+        vote_type = Vote.VOTE_DOWN
+    else:
+        raise Http404
+
+    obj = get_object_or_404(model, id=object_id, deleted=False)
+    content_type = ContentType.objects.get_for_model(model)
+    try:
+        existing_vote = Vote.objects.get(content_type=content_type,
+                                         object_id=object_id,
+                                         user=request.user)
+    except Vote.DoesNotExist:
+        existing_vote = None
+
+    if existing_vote is None:
+        Vote.objects.create(content_type=content_type,
+                            object_id=object_id,
+                            user=request.user,
+                            vote=vote_type)
+    else:
+        if vote_type == existing_vote.vote:
+            existing_vote.delete()
+        else:
+            existing_vote.vote = vote_type
+            existing_vote.save()
+
+    if request.is_ajax():
+        return JsonResponse({
+            'success': True,
+            'score': model._default_manager.filter(
+                id=object_id).values_list('score', flat=True)[0],
+        })
+    else:
+        return HttpResponseRedirect(obj.get_absolute_url())
 
 def flag_item(request, model, object_id):
     """Flag a Question or Answer as containing offensive content."""

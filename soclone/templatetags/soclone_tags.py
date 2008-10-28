@@ -257,3 +257,36 @@ def do_sizer(parser, token):
         # There are extra param=value arguments to consume
         extra_params = parse_extra_params(' '.join(bits[2:]))
     return SizerNode(page_var, extra_params)
+
+class DictLookupNode(template.Node):
+    def __init__(self, key, dictionary, context_var):
+        self.key = template.Variable(key)
+        self.dict = template.Variable(dictionary)
+        self.context_var = context_var
+
+    def render(self, context):
+        context[self.context_var] = \
+            self.dict.resolve(context)[self.key.resolve(context)]
+        return u''
+
+@register.tag(name='dict_lookup')
+def do_dict_lookup(parser, token):
+    """
+    Given a key and a dict, attempts to retrieve the value with the key
+    and stores it in a context variable.
+
+    Example usage::
+
+       {% dict_lookup answer.id in answer_vote_dict as vote %}
+    """
+    bits = token.contents.split()
+    if len(bits) != 6:
+        raise template.TemplateSyntaxError, \
+            "'%r' tag takes exactly five arguments" % bits[0]
+    if bits[2] != 'in':
+        raise template.TemplateSyntaxError, \
+            "second argument to '%r' tag must be 'in'" % bits[0]
+    if bits[4] != 'as':
+        raise template.TemplateSyntaxError, \
+            "fourth argument to '%r' tag must be 'as'" % bits[0]
+    return DictLookupNode(bits[1], bits[3], bits[5])

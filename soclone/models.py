@@ -1,4 +1,5 @@
 """SOClone Models."""
+import collections
 import datetime
 import hashlib
 import re
@@ -296,6 +297,53 @@ class AnswerRevision(models.Model):
                                                 flat=True)[0] + 1
         super(AnswerRevision, self).save(**kwargs)
 
+class VoteManager(models.Manager):
+    def get_for_question_and_answers(self, user, question, answers):
+        """
+        Attempts to retrieve votes made by a User for a Question and some
+        of its Answers.
+
+        Returns a two-tuple of (Question Vote, Answer Vote dict), where
+        the Question Vote will be ``None`` if no Vote was present and the
+        Answer Vote dict is keyed with Answer ids and contains ``None``
+        when a Vote was not present for a particular Answer.
+        """
+        question_vote = None
+        answer_votes = collections.defaultdict(lambda: None)
+
+        # No need to check the database for anonymous users
+        if not user.is_authenticated():
+            return question_vote, answer_votes
+
+        question_ct = ContentType.objects.get_for_model(Question)
+
+        # Simpler case when only retrieving votes for a Question
+        if not answers:
+            try:
+                question_vote = self.get(
+                    content_type = question_content_type,
+                    object_id    = question.id,
+                    user         = user
+                )
+            except Vote.DoesNotExist:
+                pass
+            return question_vote, answer_votes
+
+        answer_ct = ContentType.objects.get_for_model(Answer)
+        votes = self.filter(
+            Q(content_type=question_ct, object_id=question.id) |
+            Q(content_type=answer_ct,
+              object_id__in=[answer.id for answer in answers]),
+            user = user
+        )
+
+        for vote in votes:
+            if vote.content_type_id == answer_ct.id:
+                answer_votes[vote.object_id] = vote
+            else:
+                question_vote = vote
+        return question_vote, answer_votes
+
 class Vote(models.Model):
     """An up or down vote on a Question or Answer."""
     VOTE_UP = +1
@@ -311,6 +359,8 @@ class Vote(models.Model):
     user           = models.ForeignKey(User, related_name='votes')
     vote           = models.SmallIntegerField(choices=VOTE_CHOICES)
 
+    objects = VoteManager()
+
     class Meta:
         unique_together = ('content_type', 'object_id', 'user')
 
@@ -318,7 +368,7 @@ class Vote(models.Model):
         return self.vote == self.VOTE_UP
 
     def is_downvote(self):
-        return self.vote == self.VOTE_UP
+        return self.vote == self.VOTE_DOWN
 
 def update_post_score(instance, **kwargs):
     """
@@ -330,7 +380,7 @@ def update_post_score(instance, **kwargs):
     cursor = connection.cursor()
     cursor.execute(
         'UPDATE %(post_table)s SET score = ('
-            'SELECT SUM(vote) from soclone_vote '
+            'SELECT COALESCE(SUM(vote), 0) from soclone_vote '
             'WHERE soclone_vote.content_type_id = %%s '
               'AND soclone_vote.object_id = %(post_table)s.id'
         ') '
