@@ -33,8 +33,8 @@ $(function()
     </form>
     <form class="favourite" id="question-favourite-{{ question.id }}" action="{% url favourite_question question.id %}" method="POST">
       <input type="image" id="question-star{{ question.id }}" src="{{ MEDIA_URL }}img/favourite{% if favourite %}-on{% endif %}.png" alt="{% if favourite %}Remove{% else %}Add{% endif %} Favourite">
+      {% if question.favourite_count %}<strong>{{ question.favourite_count }}</strong>{% endif %}
     </form>
-    <div class="views"><strong>{{ question.view_count }}</strong> view{{ question.view_count|pluralize }}</div>
   </div>
   <div class="content">
     <div class="text">

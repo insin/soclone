@@ -63,6 +63,8 @@ div.stats div.views { margin: 7px -7px 0; }
   #question div.controls { float: left; }
   #question div.users { float: right; }
 
+form.favourite strong { display: block ; }
+
 h2.close-reason { padding: 1em; margin: 1em 0; text-align: center; }
 
 div.vote { text-align: center; width: 60px; float: left; }
