@@ -101,7 +101,20 @@ DEFAULT_ANSWER_SORT = 'votes'
 
 def question(request, question_id):
     """Displays a Question."""
-    question = get_object_or_404(Question, id=question_id)
+    if not request.user.is_authenticated():
+        question = get_object_or_404(Question, id=question_id)
+        favourite = False
+    else:
+        question = get_object_or_404(Question.objects.extra(
+            select={
+                'user_favourite_id': (
+                    'SELECT id FROM soclone_favouritequestion '
+                    'WHERE question_id = soclone_question.id '
+                      'AND user_id = %s'),
+            },
+            select_params=[request.user.id]
+        ), id=question_id)
+        favourite = (question.user_favourite_id is not None)
 
     if 'showcomments' in request.GET:
         return question_comments(request, question)
@@ -128,14 +141,6 @@ def question(request, question_id):
     # Look up vote status for the current user
     question_vote, answer_votes = Vote.objects.get_for_question_and_answers(
         request.user, question, page.object_list)
-
-    # Look up favourite status for the current user
-    favourite = False
-    if (request.user.is_authenticated() and
-        len(FavouriteQuestion.objects.filter(
-                user=request.user, question=question).values_list(
-                    'id', flat=True))):
-        favourite = True
 
     title = question.title
     if question.closed:
@@ -169,6 +174,7 @@ def question_comments(request, question, form=None):
     content_type = ContentType.objects.get_for_model(Question)
     comments = Comment.objects.filter(content_type=content_type,
                                       object_id=question.id)
+
     if form is None:
         form = CommentForm()
 

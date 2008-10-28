@@ -17,6 +17,7 @@ $(function()
     $("#id_text").typeWatch({highlight: false, wait: 3000,
                              captureLength: 5, callback: SOClone.styleCode});
     $("#id_text:not(.processed)").TextAreaResizer();
+    SOClone.styleCode();
 });
 </script>
 {% endblock %}
