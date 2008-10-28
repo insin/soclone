@@ -65,6 +65,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'soclone.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
+    'soclone.context_processors.request_path',
 )
 
 # List of middleware classes to use.  Order is important; in the request phase,

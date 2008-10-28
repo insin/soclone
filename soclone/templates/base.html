@@ -25,7 +25,7 @@
           <span class="link-separator">|</span>
           <a href="{% url logout %}">logout</a>
           {% else %}
-          <a href="{% url login %}">login</a>
+          <a href="{% url login %}?next={{ request_path }}">login</a>
           {% endif %}
           <span class="link-separator">|</span>
           <a href="{% url about %}">about</a>
