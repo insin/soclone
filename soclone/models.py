@@ -321,7 +321,7 @@ class VoteManager(models.Manager):
         if not answers:
             try:
                 question_vote = self.get(
-                    content_type = question_content_type,
+                    content_type = question_ct,
                     object_id    = question.id,
                     user         = user
                 )
