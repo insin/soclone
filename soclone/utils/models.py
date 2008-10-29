@@ -1,26 +1,7 @@
+"""Utilities for working with Django Models."""
 import itertools
 
 from django.contrib.contenttypes.models import ContentType
-
-def flatten(x):
-    """
-    Returns a single, flat list which contains all elements retrieved
-    from the sequence and all recursively contained sub-sequences
-    (iterables).
-
-    Examples:
-    >>> [1, 2, [3, 4], (5, 6)]
-    [1, 2, [3, 4], (5, 6)]
-
-    From http://kogs-www.informatik.uni-hamburg.de/~meine/python_tricks
-    """
-    result = []
-    for el in x:
-        if hasattr(el, '__iter__') and not isinstance(el, basestring):
-            result.extend(flatten(el))
-        else:
-            result.append(el)
-    return result
 
 def fetch_model_dict(model, ids, fields=None):
     """

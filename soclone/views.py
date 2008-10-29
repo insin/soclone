@@ -24,7 +24,7 @@ from soclone.models import (Answer, AnswerRevision, Badge, Comment,
     FavouriteQuestion, Question, QuestionRevision, Tag, Vote)
 from soclone.questions import all_question_views, unanswered_question_views
 from soclone.shortcuts import get_page
-from soclone.utils import populate_foreign_key_caches
+from soclone.utils.models import populate_foreign_key_caches
 
 # Do not allow raw HTML when processing Markdown formatted text
 markdowner = Markdown(html4tags=True, safe_mode='escape')
