@@ -1,16 +1,56 @@
 Dependencies
 ------------
 
-1. `django_html`_.
+1. `django_html`_ for rendering ``django.forms`` components using HTML
+   instead of XHTML.
 
-2. `python-markdown2`_.
+2. `python-markdown2`_ for converting Markdown-formatted user input
+   into HTML.
 
-3. `html5lib`_.
+3. `html5lib`_ for HTML sanitisation.
 
-4. `HTML Diff`_, the contents of which are expected to be in a module
-   named ``htmldiff`` on your ``PYTHONPATH``.
+4. `lxml`_ for HTML diffing.
+
+5. Oh, and `Django`_ 1.0 or greater, of course.
 
 .. _`django_html`: http://code.google.com/p/django-html/
 .. _`python-markdown2`: http://code.google.com/p/python-markdown2/
 .. _`html5lib`: http://code.google.com/p/html5lib/
-.. _`HTML Diff`: http://www.aaronsw.com/2002/diff
+.. _`lxml`: http://codespeak.net/lxml/
+.. _`Django`: http://www.djangoproject.com/
+
+Installation
+------------
+
+To play around with SOClone while it's being developed:
+
+1. Add the directory containing this file to your ``PYTHONPATH``.
+
+2. Create a ``local_settings.py`` file in the ``soclone`` project
+   directory, using the template supplied in the ``settings.py``
+   docstring.
+
+   SOClone is being developed against SQLite initially, using settings
+   something like the following::
+
+      import os
+      DIRNAME = os.path.dirname(__file__)
+      INTERNAL_IPS = ('127.0.0.1',) # Display SQL queries in the footer
+      DATABASE_ENGINE = 'sqlite3'
+      DATABASE_NAME = os.path.join(DIRNAME, 'database.db')
+      MEDIA_URL = '/media/'
+
+3. Run the following command to create the database::
+
+      django-admin.py syncdb --settings=soclone.settings
+
+   You will be prompted to create a superuser.
+
+4. Run the following command to start the development server::
+
+      django-admin.py runserver --settings=soclone.settings
+
+5. Cross your fingers, open http://localhost:8000/questions/ and log in
+   with the superuser account you created.
+
+   Here be dragons.

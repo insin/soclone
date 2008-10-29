@@ -132,8 +132,8 @@ div.vote div.views { font-size: 85%; }
 .question-sidebar dd { font-size: 120%; }
 
 /* Revision pages */
-del.diff, del.diff * { text-decoration: none; }
-ins.diff, ins.diff * { text-decoration: none; }
+del { text-decoration: none; }
+ins { text-decoration: none; }
 
 div.revision .revision-number { font-size: 300%; line-height: 76px; }
 
@@ -194,8 +194,8 @@ div.answer { border-bottom-color:  #666; }
 h2.close-reason { background-color: #eee; }
 
 /* Revision pages */
-del.diff, del.diff * { background-color: #ff9797; }
-ins.diff, ins.diff * { background-color: #97ff97; }
+del { background-color: #ff9797; }
+ins { background-color: #97ff97; }
 
 div.revision .header { background-color: #eee; }
 div.revision .summary { background-color: #fffe9b; color: #333; }

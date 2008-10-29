@@ -12,7 +12,7 @@ from django.template import RequestContext
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
-import htmldiff
+from lxml.html.diff import htmldiff
 from markdown2 import Markdown
 from soclone import auth
 from soclone import diff
@@ -421,8 +421,8 @@ def question_revisions(request, question_id):
                               for tag in revision.tagnames.split(' ')]),
         }
         if i > 0:
-            revisions[i - 1].diff = htmldiff.textDiff(revision.html,
-                                                      revisions[i - 1].html)
+            revisions[i - 1].diff = htmldiff(revision.html,
+                                             revisions[i - 1].html)
     return render_to_response('question_revisions.html', {
         'title': u'Question Revisions',
         'question': question,
@@ -686,8 +686,8 @@ def answer_revisions(request, answer_id):
             'html': sanitize_html(markdowner.convert(revision.text)),
         }
         if i > 0:
-            revisions[i - 1].diff = htmldiff.textDiff(revision.html,
-                                                      revisions[i - 1].html)
+            revisions[i - 1].diff = htmldiff(revision.html,
+                                             revisions[i - 1].html)
     return render_to_response('answer_revisions.html', {
         'title': u'Answer Revisions',
         'answer': answer,
