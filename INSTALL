@@ -5,9 +5,12 @@ Dependencies
 
 2. `python-markdown2`_.
 
-3. `HTML Diff`_, the contents of which are expected to be in a module
+3. `html5lib`_.
+
+4. `HTML Diff`_, the contents of which are expected to be in a module
    named ``htmldiff`` on your ``PYTHONPATH``.
 
 .. _`django_html`: http://code.google.com/p/django-html/
 .. _`python-markdown2`: http://code.google.com/p/python-markdown2/
+.. _`html5lib`: http://code.google.com/p/html5lib/
 .. _`HTML Diff`: http://www.aaronsw.com/2002/diff

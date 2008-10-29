@@ -24,10 +24,10 @@ from soclone.models import (Answer, AnswerRevision, Badge, Comment,
     FavouriteQuestion, Question, QuestionRevision, Tag, Vote)
 from soclone.questions import all_question_views, unanswered_question_views
 from soclone.shortcuts import get_page
+from soclone.utils.html import sanitize_html
 from soclone.utils.models import populate_foreign_key_caches
 
-# Do not allow raw HTML when processing Markdown formatted text
-markdowner = Markdown(html4tags=True, safe_mode='escape')
+markdowner = Markdown(html4tags=True)
 
 AUTO_WIKI_ANSWER_COUNT = 30
 
@@ -193,7 +193,7 @@ def ask_question(request):
     if request.method == 'POST':
         form = AskQuestionForm(request.POST)
         if form.is_valid():
-            html = markdowner.convert(form.cleaned_data['text'])
+            html = sanitize_html(markdowner.convert(form.cleaned_data['text']))
             if 'preview' in request.POST:
                 # The user submitted the form to preview the formatted question
                 preview = mark_safe(html)
@@ -284,7 +284,8 @@ def _edit_question(request, question):
             # Always check modifications against the latest revision
             form = EditQuestionForm(question, latest_revision, request.POST)
             if form.is_valid():
-                html = markdowner.convert(form.cleaned_data['text'])
+                html = sanitize_html(
+                    markdowner.convert(form.cleaned_data['text']))
                 if 'preview' in request.POST:
                     # The user submitted to preview the formatted question
                     preview = mark_safe(html)
@@ -415,7 +416,7 @@ def question_revisions(request, question_id):
     for i, revision in enumerate(revisions):
         revision.html = QUESTION_REVISION_TEMPLATE % {
             'title': revision.title,
-            'html': markdowner.convert(revision.text),
+            'html': sanitize_html(markdowner.convert(revision.text)),
             'tags': ' '.join(['<a class="tag">%s</a>' % tag
                               for tag in revision.tagnames.split(' ')]),
         }
@@ -516,7 +517,7 @@ def add_answer(request, question_id):
     if request.method == 'POST':
         form = AddAnswerForm(request.POST)
         if form.is_valid():
-            html = markdowner.convert(form.cleaned_data['text'])
+            html = sanitize_html(markdowner.convert(form.cleaned_data['text']))
             if 'preview' in request.POST:
                 # The user submitted the form to preview the formatted answer
                 preview = mark_safe(html)
@@ -615,7 +616,8 @@ def edit_answer(request, answer_id):
             # Always check modifications against the latest revision
             form = EditAnswerForm(answer, latest_revision, request.POST)
             if form.is_valid():
-                html = markdowner.convert(form.cleaned_data['text'])
+                html = sanitize_html(
+                    markdowner.convert(form.cleaned_data['text']))
                 if 'preview' in request.POST:
                     # The user submitted to preview the formatted question
                     preview = mark_safe(html)
@@ -681,7 +683,7 @@ def answer_revisions(request, answer_id):
                  'bronze'))
     for i, revision in enumerate(revisions):
         revision.html = QUESTION_REVISION_TEMPLATE % {
-            'html': markdowner.convert(revision.text),
+            'html': sanitize_html(markdowner.convert(revision.text)),
         }
         if i > 0:
             revisions[i - 1].diff = htmldiff.textDiff(revision.html,
