@@ -14,7 +14,7 @@ from django.db.models.signals import post_delete, post_save, pre_save
 from django.template.defaultfilters import slugify
 from django.utils import simplejson
 
-from soclone.utils import flatten
+from soclone.utils.lists import flatten
 
 class TagManager(models.Manager):
     UPDATE_USE_COUNTS_QUERY = (

@@ -3,6 +3,8 @@ import itertools
 
 from django.contrib.contenttypes.models import ContentType
 
+from soclone.utils.lists import flatten
+
 def fetch_model_dict(model, ids, fields=None):
     """
     Fetches a dict of model details for model instances with the given
