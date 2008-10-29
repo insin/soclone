@@ -1,11 +1,14 @@
 from django.template.defaultfilters import pluralize
 
-def generate_question_revision_summary(old_revision, new_revision):
+def generate_question_revision_summary(old_revision, new_revision, wikified):
     """
     Generates a summary message based on the differences between the given
     QuestionRevision objects.
     """
     summary = []
+    wikified_summary = _generate_wikified_summary(wikified)
+    if wikified_summary is not None:
+        summary.append(wikified_summary)
     if old_revision.title != new_revision.title:
         summary.append(u'modified title')
     body_summary = _generate_body_summary(old_revision, new_revision)
@@ -15,12 +18,19 @@ def generate_question_revision_summary(old_revision, new_revision):
         summary.append(u'modified tags')
     return u'; '.join(summary)
 
-def generate_answer_revision_summary(old_revision, new_revision):
+def generate_answer_revision_summary(old_revision, new_revision, wikified):
     """
     Generates a summary message based on the differences between the given
     AnswerRevision objects.
     """
-    return _generate_body_summary(old_revision, new_revision)
+    summary = []
+    wikified_summary = _generate_wikified_summary(wikified)
+    if wikified_summary is not None:
+        summary.append(wikified_summary)
+    body_summary = _generate_body_summary(old_revision, new_revision)
+    if body_summary is not None:
+        summary.append(body_summary)
+    return u'; '.join(summary)
 
 def _generate_body_summary(old_revision, new_revision):
     """
@@ -41,3 +51,9 @@ def _generate_body_summary(old_revision, new_revision):
                 change = change * -1
             summary = body_summary % (change, pluralize(change))
     return summary
+
+def _generate_wikified_summary(wikified):
+    """Generates a summary message for enabling wiki mode."""
+    if wikified:
+        return u'put into wiki mode'
+    return None

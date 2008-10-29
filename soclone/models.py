@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import re
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -13,6 +13,8 @@ from django.db.models import Q
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.template.defaultfilters import slugify
 from django.utils import simplejson
+
+from soclone.utils import flatten
 
 class TagManager(models.Manager):
     UPDATE_USE_COUNTS_QUERY = (
@@ -123,6 +125,7 @@ class Question(models.Model):
     tags     = models.ManyToManyField(Tag, related_name='questions')
     # Status
     wiki            = models.BooleanField(default=False)
+    wikified_at     = models.DateTimeField(null=True, blank=True)
     answer_accepted = models.BooleanField(default=False)
     closed          = models.BooleanField(default=False)
     closed_by       = models.ForeignKey(User, null=True, blank=True, related_name='closed_questions')
@@ -254,6 +257,7 @@ class Answer(models.Model):
     added_at = models.DateTimeField(default=datetime.datetime.now)
     # Status
     wiki        = models.BooleanField(default=False)
+    wikified_at = models.DateTimeField(null=True, blank=True)
     accepted    = models.BooleanField(default=False)
     deleted     = models.BooleanField(default=False)
     deleted_by  = models.ForeignKey(User, null=True, blank=True, related_name='deleted_answers')
@@ -529,15 +533,52 @@ def update_badge_award_counts(instance, **kwargs):
 post_save.connect(update_badge_award_counts, sender=Award)
 post_delete.connect(update_badge_award_counts, sender=Award)
 
-# Here be Drago^H^H^H^H^HMonkeys
+#                .-"""-.
+#              _/-=-.   \
+#             (_|a a/   |_
+#              / "  \   ,_)
+#         _    \`=' /__/
+#        / \_  .;--'  `-.
+#        \___)//      ,  \
+#         \ \/;        \  \
+#          \_.|         | |
+#           .-\ '     _/_/
+#         .'  _;.    (_  \
+#        /  .'   `\   \\_/
+#       |_ /       |  |\\
+#      /  _)       /  / ||
+# jgs /  /       _/  /  //
+#     \_/       ( `-/  ||
+#               /  /   \\ .-.
+#               \_/     \'-'/
+#                        `"`
 
+# Monkeypatch additional methods into UserManager
+def update_reputation(manager, changes):
+    """
+    Updates User reputation scores where changes are specified as
+    two-tuples of (User id, reputation score change), ensuring that
+    a User's reputation score can't go below 1.
+    """
+    change_count = len(changes)
+    cursor = connection.cursor()
+    cursor.execute(
+        'UPDATE auth_user SET reputation = CASE %s ELSE reputation END '
+        'WHERE id IN (%s)' % (
+        ' '.join(['WHEN id = %s THEN MAX(1, reputation + %s)'] * change_count),
+        ','.join(['%s'] * change_count)),
+        flatten(changes) + [c[0] for c in changes])
+    transaction.commit_unless_managed()
+
+UserManager.update_reputation = update_reputation
+
+# Monkeypatch additional profile fields into User
 QUESTIONS_PER_PAGE_CHOICES = (
    (10, u'10'),
    (30, u'30'),
    (50, u'50'),
 )
 
-# Monkeypatch additional profile fields into User
 User.add_to_class('reputation', models.PositiveIntegerField(default=1))
 User.add_to_class('gravatar', models.CharField(max_length=32))
 User.add_to_class('favourite_questions',

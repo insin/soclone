@@ -13,7 +13,6 @@
 <script type="text/javascript">
 $(function()
 {
-    $("#preview-button").hide();
     $("#id_text").typeWatch({highlight: false, wait: 3000,
                              captureLength: 5, callback: SOClone.styleCode});
     $("#id_text:not(.processed)").TextAreaResizer();
@@ -39,7 +38,7 @@ $(function()
              alt="{% if question_vote and question_vote.is_downvote %}Undo Down Vote{% else %}Vote Down{% endif %}">
     </form>
     <form class="favourite" id="question-favourite-{{ question.id }}" action="{% url favourite_question question.id %}" method="POST">
-      <input type="image" id="question-star{{ question.id }}"
+      <input type="image" id="question-star-{{ question.id }}"
              src="{{ MEDIA_URL }}img/favourite{% if favourite %}-on{% endif %}.png"
              alt="{% if favourite %}Remove{% else %}Add{% endif %} Favourite">
       {% if question.favourite_count %}<strong>{{ question.favourite_count }}</strong>{% endif %}
@@ -106,7 +105,7 @@ $(function()
   </div>
   {% for answer in answers %}
   {% dict_lookup answer.id in answer_votes as vote %}
-  <div class="answer" id="answer-{{ answer.id }}">
+  <div class="answer{% ifequal question.author_id answer.author_id %} author-answer{% endifequal %}{% if answer.accepted %} accepted{% endif %}" id="answer-{{ answer.id }}">
     <div class="vote">
       <form class="vote" id="answer-up-{{ answer.id }}" action="{% url vote_on_answer answer.id %}" method="POST">
         <input type="hidden" name="type" value="up">
@@ -120,6 +119,11 @@ $(function()
         <input type="image" id="answer-downarrow-{{ answer.id }}"
                src="{{ MEDIA_URL }}img/vote-arrow-down{% if vote and vote.is_downvote %}-on{% endif %}.png"
                alt="{% if vote and vote.is_downvote %}Undo Down Vote{% else %}Vote Down{% endif %}">
+      </form>
+      <form class="accept" id="accept-{{ answer.id }}" action="{% url accept_answer answer.id %}" method="POST">
+        <input type="image" id="acccept-tick-{{ answer.id }}"
+               src="{{ MEDIA_URL }}img/accept{% if answer.accepted %}-on{% endif %}.png"
+               alt="{% if answer.accepted %}Withdraw Acceptance{% else %}Accept{% endif %}">
       </form>
     </div>
     <div class="content">

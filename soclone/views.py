@@ -26,7 +26,8 @@ from soclone.questions import all_question_views, unanswered_question_views
 from soclone.shortcuts import get_page
 from soclone.utils import populate_foreign_key_caches
 
-markdowner = Markdown()
+# Do not allow raw HTML when processing Markdown formatted text
+markdowner = Markdown(html4tags=True, safe_mode='escape')
 
 AUTO_WIKI_ANSWER_COUNT = 30
 
@@ -211,6 +212,7 @@ def ask_question(request):
                     summary          = strip_tags(html)[:180]
                 )
                 if question.wiki:
+                    question.wikified_at = added_at
                     # When in wiki mode, we always display the last edit
                     question.last_edited_at = added_at
                     question.last_edited_by = request.user
@@ -303,8 +305,10 @@ def _edit_question(request, question):
                             'summary': strip_tags(html)[:180],
                             'html': html,
                         }
-                        if 'wiki' in form.cleaned_data:
-                           updated_fields['wiki'] = form.cleaned_data['wiki']
+                        if ('wiki' in form.cleaned_data and
+                            form.cleaned_data['wiki']):
+                            updated_fields['wiki'] = True
+                            updated_fields['wikified_at'] = edited_at
                         Question.objects.filter(
                             id=question.id).update(**updated_fields)
                         # Update the Question's tag associations
@@ -325,7 +329,8 @@ def _edit_question(request, question):
                         else:
                             revision.summary = \
                                 diff.generate_question_revision_summary(
-                                    latest_revision, revision)
+                                    latest_revision, revision,
+                                    ('wiki' in updated_fields))
                         revision.save()
                         # TODO 5 body edits by the author = automatic wiki mode
                         # TODO 4 individual editors = automatic wiki mode
@@ -481,8 +486,8 @@ def favourite_question(request, question_id):
     """
     Adds or removes a FavouriteQuestion.
 
-    Favouriting will not use a confirmation page, as it's an action which is
-    non-destructive and easily reversible.
+    Favouriting will not use a confirmation page, as it's an action which
+    is non-destructive and easily reversible.
     """
     if request.method != 'POST':
         raise Http404
@@ -502,8 +507,9 @@ def add_answer(request, question_id):
     """
     Adds an Answer to a Question.
 
-    Once 30 answers have been added, the question and all answers will
-    enter wiki mode and all subseuent answers will be in wiki mode.
+    Once a certain number of Answers have been added, a Question and all
+    its Answers will enter wiki mode and all subsequent Answers will be in
+    wiki mode.
     """
     question = get_object_or_404(Question, id=question_id)
     preview = None
@@ -517,7 +523,7 @@ def add_answer(request, question_id):
             elif 'submit' in request.POST:
                 added_at = datetime.datetime.now()
                 # Create the Answer
-                answer = Answer.objects.create(
+                answer = Answer(
                     question = question,
                     author   = request.user,
                     added_at = added_at,
@@ -525,6 +531,12 @@ def add_answer(request, question_id):
                                 question.answer_count >= AUTO_WIKI_ANSWER_COUNT),
                     html     = html
                 )
+                if answer.wiki:
+                    answer.wikified_at = added_at
+                    # When in wiki mode, we always display the last edit
+                    answer.last_edited_at = added_at
+                    answer.last_edited_by = request.user
+                answer.save()
                 # Create the initial revision
                 AnswerRevision.objects.create(
                     answer     = answer,
@@ -611,12 +623,17 @@ def edit_answer(request, answer_id):
                     if form.has_changed():
                         edited_at = datetime.datetime.now()
                         # Update the Answer itself
-                        if 'wiki' in form.cleaned_data:
-                           answer.wiki = form.cleaned_data['wiki']
-                        answer.last_edited_at = edited_at
-                        answer.last_edited_by = request.user
-                        answer.html = html
-                        answer.save()
+                        updated_fields = {
+                            'last_edited_at': edited_at,
+                            'last_edited_by': request.user,
+                            'html': html,
+                        }
+                        if ('wiki' in form.cleaned_data and
+                            form.cleaned_data['wiki']):
+                            updated_fields['wiki'] = True
+                            updated_fields['wikified_at'] = edited_at
+                        Answer.objects.filter(
+                            id=answer.id).update(**updated_fields)
                         # Create a new revision
                         revision = AnswerRevision(
                             answer = answer,
@@ -629,7 +646,8 @@ def edit_answer(request, answer_id):
                         else:
                             revision.summary = \
                                 diff.generate_answer_revision_summary(
-                                    latest_revision, revision)
+                                    latest_revision, revision,
+                                    ('wiki' in updated_fields))
                         revision.save()
                         # TODO 5 body edits by the asker = automatic wiki mode
                         # TODO 4 individual editors = automatic wiki mode
@@ -674,6 +692,10 @@ def answer_revisions(request, answer_id):
         'revisions': revisions,
     }, context_instance=RequestContext(request))
 
+def accept_answer(request, answer_id):
+    """Marks an Answer as accepted."""
+    raise NotImplementedError
+
 def delete_answer(request, answer_id):
     """Deletes or undeletes an Answer."""
     raise NotImplementedError
@@ -692,6 +714,8 @@ def vote(request, model, object_id):
         vote_type = Vote.VOTE_DOWN
     else:
         raise Http404
+
+    # TODO Ensure users can't vote on their own posts
 
     obj = get_object_or_404(model, id=object_id, deleted=False, locked=False)
     content_type = ContentType.objects.get_for_model(model)
