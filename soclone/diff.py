@@ -42,7 +42,7 @@ def _generate_body_summary(old_revision, new_revision):
     if old_revision.text != new_revision.text:
         change = len(new_revision.text) - len(old_revision.text)
         if not change:
-            summary.append(u'modified body')
+            summary = u'modified body'
         else:
             if change > 0:
                 body_summary = u'added %s character%s to body'
