@@ -43,7 +43,7 @@ $(function()
     {% if form.wiki %}{% field form.wiki %} {{ form.wiki.label_tag }}{% endif %}
   </div>
   <div class="form-item">
-    <div class="wmd-preview">{% if preview %}{{ preview }}{% endif %}</div>
+    <div class="wmd-preview text">{% if preview %}{{ preview }}{% endif %}</div>
   </div>
   <div class="form-item">
     {{ form.tags.label_tag }}
