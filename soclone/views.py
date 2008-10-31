@@ -74,9 +74,9 @@ def index(request):
     extra_context = {
         # TODO Retrieve extra context required for index page
     }
-    return _question_list(request, index_question_views, 'index.html',
-                          questions_per_page=50, page_number=1,
-                          extra_context=extra_context)
+    return question_list(request, index_question_views, 'index.html',
+                         questions_per_page=50, page_number=1,
+                         extra_context=extra_context)
 
 def about(request):
     """About SOClone."""
