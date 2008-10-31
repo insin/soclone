@@ -86,3 +86,6 @@ all_question_views = (
 
 # TODO Implement unanswered views
 unanswered_question_views = all_question_views
+
+# TODO Implement index views
+index_question_views = all_question_views

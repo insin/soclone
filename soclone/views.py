@@ -22,7 +22,8 @@ from soclone.forms import (AddAnswerForm, AskQuestionForm, CloseQuestionForm,
 from soclone.http import JsonResponse
 from soclone.models import (Answer, AnswerRevision, Badge, Comment,
     FavouriteQuestion, Question, QuestionRevision, Tag, Vote)
-from soclone.questions import all_question_views, unanswered_question_views
+from soclone.questions import (all_question_views, index_question_views,
+    unanswered_question_views)
 from soclone.shortcuts import get_page
 from soclone.utils.html import sanitize_html
 from soclone.utils.models import populate_foreign_key_caches
@@ -36,9 +37,46 @@ def get_questions_per_page(user):
         return user.questions_per_page
     return 10
 
+def question_list(request, question_views, template, questions_per_page=None,
+                  page_number=None, extra_context=None):
+    """
+    Question list generic view.
+
+    Allows the user to select from a number of ways of viewing questions,
+    rendered with the given template.
+    """
+    view_id = request.GET.get('sort', None)
+    view = dict([(q.id, q) for q in question_views]).get(view_id,
+                                                         question_views[0])
+    if questions_per_page is None:
+        questions_per_page = get_questions_per_page(request.user)
+    paginator = Paginator(view.get_queryset(), questions_per_page)
+    if page_number is None:
+        page = get_page(request, paginator)
+    else:
+        page = paginator.page(page_number)
+    populate_foreign_key_caches(User, ((page.object_list, (view.user,)),),
+                                fields=view.user_fields)
+    context = {
+        'title': view.page_title,
+        'page': page,
+        'questions': page.object_list,
+        'current_view': view,
+        'question_views': question_views,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+    return render_to_response(template, context,
+                              context_instance=RequestContext(request))
+
 def index(request):
     """A condensed version of the main Question list."""
-    raise NotImplementedError
+    extra_context = {
+        # TODO Retrieve extra context required for index page
+    }
+    return _question_list(request, index_question_views, 'index.html',
+                          questions_per_page=50, page_number=1,
+                          extra_context=extra_context)
 
 def about(request):
     """About SOClone."""
@@ -60,37 +98,13 @@ def logout(request):
     """Logs out."""
     return auth_views.logout(request, template_name='logged_out.html')
 
-def _question_list(request, question_views, template):
-    """
-    Question list generic view.
-
-    Allows the user to select from a number of ways of viewing questions,
-    rendered with the given template.
-    """
-    view_id = request.GET.get('sort', None)
-    view = dict([(q.id, q) for q in question_views]).get(view_id,
-                                                         question_views[0])
-    paginator = Paginator(view.get_queryset(),
-                          get_questions_per_page(request.user))
-    page = get_page(request, paginator)
-    questions = page.object_list
-    populate_foreign_key_caches(User, ((questions, (view.user,)),),
-                                fields=view.user_fields)
-    return render_to_response(template, {
-        'title': view.page_title,
-        'page': page,
-        'questions': questions,
-        'current_view': view,
-        'question_views': question_views,
-    }, context_instance=RequestContext(request))
-
 def questions(request):
     """All Questions list."""
-    return _question_list(request, all_question_views, 'questions.html')
+    return question_list(request, all_question_views, 'questions.html')
 
 def unanswered(request):
     """Unanswered Questions list."""
-    return _question_list(request, unanswered_question_views, 'unanswered.html')
+    return question_list(request, unanswered_question_views, 'unanswered.html')
 
 ANSWER_SORT = {
     'votes': ('-score', '-added_at'),
