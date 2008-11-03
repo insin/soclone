@@ -6,7 +6,7 @@
 
 {% block content %}
 <div id="badge">
-  <p><span class="badge"><span class="badge{{ badge.type }}">&bull;</span> {{ badge.name }}</span> {{ badge.description }}</p>
+  <p><span class="badge"><span class="badge{{ badge.type }}">&bull;</span> {{ badge.name }}</span> {{ badge.description }}.{% if badge.multiple %} This badge can be awarded multiple times.{% endif %}</p>
   <div class="user-lists">
   {% for recipient_list in awarded_to|in_batches:"4" %}
     {% if recipient_list %}

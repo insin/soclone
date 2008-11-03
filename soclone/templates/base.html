@@ -55,6 +55,7 @@
     </div>
   </div>
 
+{% block fullcontent %}
   <div id="content">
     <div id="pageheader">
       <h2>{% block pageheader_title %}{% firstof pageheader_title title %}{% endblock %}</h2>
@@ -64,6 +65,7 @@
 {% block content %}{% endblock %}
   </div>
 </div>
+{% endblock %}
 
 <div id="footer">
 {% if debug %}

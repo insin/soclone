@@ -52,6 +52,12 @@ a.tag { border-width: 0 1px 1px 0; border-style: solid; margin: 2px 2px 2px 0;
 
 div.text p { margin-bottom: 1em; }
 
+/* Index page */
+div.index-stats { text-align: center; float: left; }
+  div.index-votes, div.index-status, div.index-views { float: left; width: 4em; }
+  div.index-stats strong { display: block; }
+div.index-summary { float: left; }
+
 /* Question list page */
 div.question-summary { overflow: hidden; }
 div.stats { text-align: center; float: left; margin: 0 7px;
@@ -122,6 +128,9 @@ a.tag { font-size: 90%; line-height: 2.2em; text-decoration: none;
 
 .warning { color: #600; }
 
+/* Index page */
+div.index-stats strong { font-size: 140%; }
+
 /* Question list page */
 div.votes strong { font-size: 240%; }
 div.status strong { font-size: 140%; }
@@ -179,6 +188,9 @@ body.users #nav-users a,
 body.badges #nav-badges a,
 body.unanswered #nav-unanswered a,
 body.ask-question #nav-ask-question a { background-color: #f90; }
+
+/* Index page */
+div.index-votes { background-color: #eee; }
 
 /* Question list page */
 div.stats { background: #eee url(../img/stats-arrow.gif) no-repeat scroll right top; }

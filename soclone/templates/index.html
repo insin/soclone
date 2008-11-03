@@ -1,0 +1,57 @@
+{% extends "base_2col.html" %}
+{% load soclone_tags humanize %}
+
+{% block bodyclass %}index{% endblock %}
+
+{% block fullcontent %}
+<div id="content">
+  <div id="main">
+  <div id="pageheader">
+    <h2>{% block pageheader_title %}{% firstof pageheader_title title %}{% endblock %}</h2>
+    <div class="tabs">
+    {% for view in question_views %}
+      <a href="?sort={{ view.id }}" title="{{ view.tab_tooltip }}"{% ifequal view current_view %} class="active"{% endifequal %}>{{ view.tab_title }}</a>
+    {% endfor %}
+    </div>
+  </div>
+
+  {% for question in questions %}
+  <div id="questions">
+    <div class="question-summary">
+      <div class="index-stats">
+        <div class="index-votes"><strong>{{ question.score }}</strong> vote{{ question.score|pluralize }}</div>
+        <div class="index-status {% if not question.answer_count %}un{% endif %}answered{% if question.answered %}-accepted{% endif %}">
+          <strong>{{ question.answer_count }}</strong> answer{{ question.answer_count|pluralize }}
+        </div>
+        <div class="index-views"><strong>{{ question.view_count }}</strong> view{{ question.view_count|pluralize }}</div>
+      </div>
+      <div class="index-summary">
+        <h3><a href="{{ question.get_absolute_url }}" title="{{ question.summary }}">{{ question.title }}{% if question.closed %} [closed]{% endif %}</a></h3>
+        <div class="tags">
+          {% for tagname in question.tagname_list %}
+          <a href="{% url tag tagname %}" class="tag" title="show questions tagged '{{ tagname }}'" rel="tag">{{ tagname }}</a>
+          {% endfor %}
+        </div>
+        <div class="last-activity">
+          <span class="post-time"><strong>{{ question.last_activity_at|timesince }} ago</strong></span>
+          <a href="{% url user question.last_activity_by.id %}{{ question.last_activity_by.username }}/">{{ question.last_activity_by.username }}</a>
+          {% reputation question.last_activity_by %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <h2>Looking for more? Browse the <a href="{% url questions %}">complete list of questions</a>, or <a href="{% url tags %}">popular tags</a>. Help us answer <a href="{% url unanswered %}">unanswered questions</a>.</h2>
+  </div>
+
+  <div id="sidebar">
+    <div id="recent-tags" class="module">
+     <h2>Recent Tags</h2>
+    </div>
+    <div id="recent-badges" class="module">
+      <h2>Recent Badges</h2>
+    </div>
+  </div>
+</div>
+{% endblock %}
