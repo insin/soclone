@@ -1,3 +1,14 @@
+SOClone
+=======
+
+10 days' worth of furious hacking at a Stack Overflow clone for Django
+in October 2008.
+
+`OSQA`_ seems to have taken the ball and run with it, so not sure if I'll
+ever take this one any further.
+
+.. _`OSQA`: http://www.osqa.net/
+
 Dependencies
 ------------
 
@@ -13,7 +24,7 @@ Dependencies
 
 5. Oh, and `Django`_ 1.0 or greater, of course.
 
-.. _`django_html`: http://code.google.com/p/django-html/
+.. _`django_html`: http://github.com/simonw/django-html
 .. _`python-markdown2`: http://code.google.com/p/python-markdown2/
 .. _`html5lib`: http://code.google.com/p/html5lib/
 .. _`lxml`: http://codespeak.net/lxml/
@@ -24,7 +35,7 @@ Installation
 
 To play around with SOClone while it's being developed:
 
-1. Add the directory containing this file to your ``PYTHONPATH``.
+1. Use the pip-requirements.txt file to install dependencies with pip.
 
 2. Create a ``local_settings.py`` file in the ``soclone`` project
    directory, using the template supplied in the ``settings.py``
@@ -35,7 +46,6 @@ To play around with SOClone while it's being developed:
 
       import os
       DIRNAME = os.path.dirname(__file__)
-      INTERNAL_IPS = ('127.0.0.1',) # Display SQL queries in the footer
       DATABASE_ENGINE = 'sqlite3'
       DATABASE_NAME = os.path.join(DIRNAME, 'database.db')
       MEDIA_URL = '/media/'

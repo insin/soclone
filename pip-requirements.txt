@@ -1,0 +1,6 @@
+Django==1.2.5
+django-html==0.1.0
+html5lib==0.90
+# Use easy_install lxml==2.2.8 on Windows
+lxml==2.2.8
+markdown2==1.0.1.17
