@@ -16,6 +16,7 @@ $(function()
 
 {% block main %}
 <form id="question-form" method="POST" action="{% url ask_question %}">
+  {% csrf_token %}
   <h1>{{ question.title }}</h1>
   <div class="text">
     {{ question.html }}

@@ -22,6 +22,7 @@ $(function()
 
 {% block main %}
 <form id="answer-form" method="POST" action="{% url add_answer question.id %}">
+  {% csrf_token %}
   <div class="form-item">
     {% if form.text.errors %}{{ form.text.errors.as_ul }}{% endif %}
     <div class="resizable-textarea">

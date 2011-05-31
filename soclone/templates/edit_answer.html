@@ -24,6 +24,7 @@ $(function()
 
 {% block main %}
 <form id="answer-form" method="POST" action="{% url edit_answer answer.id %}">
+  {% csrf_token %}
   <div class="form-item">
     {{ revision_form.revision.label_tag }}
     {% if revision_form.revision.errors %}{{ revision_form.revision.errors.as_ul }}{% endif %}

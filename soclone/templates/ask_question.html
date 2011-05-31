@@ -22,6 +22,7 @@ $(function()
 
 {% block main %}
 <form id="question-form" method="POST" action="{% url ask_question %}">
+  {% csrf_token %}
   <div class="form-item">
     {{ form.title.label_tag }}
     {% if form.title.errors %}{{ form.title.errors.as_ul }}{% endif %}

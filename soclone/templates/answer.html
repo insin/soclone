@@ -1,3 +1,4 @@
+{% load soclone_tags %}
 <div id="answer-comments-container-{{ answer.id }}" class="comments-container">
   {% for comment in comments %}
   <div class="comment" id="answer-comment-{{ comment.id }}">
@@ -11,6 +12,7 @@
   </div>
   {% endfor %}
   <form class="comment" id="answer-add-comment-{{ question.id }}" action="{% url add_answer_commment answer.id %}" method="POST">
+    {% csrf_token %}
     <div>
       {{ comment_form.comment }} <input type="submit" value="Add Comment">
     </div>

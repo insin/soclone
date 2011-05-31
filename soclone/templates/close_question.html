@@ -6,6 +6,7 @@
 {% block content %}
 <p>You are about to close the question <a href="{{ question.absolute_url }}">{{ question.title }}</a>.</p>
 <form id="close-question" action="{% url close_question question.id %}" method="POST">
+  {% csrf_token %}
   <div class="form-item">
     {{ form.reason.label_tag }}
     {% if form.reason.errors %}{{ form.reason.errors.as_ul }}{% endif %}

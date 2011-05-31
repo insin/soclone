@@ -11,6 +11,7 @@
   </div>
   {% endfor %}
   <form class="comment" id="question-add-comment-{{ question.id }}" action="{% url add_question_commment question.id %}" method="POST">
+    {% csrf_token %}
     <div>
       {{ comment_form.comment }} <input type="submit" value="Add Comment">
     </div>

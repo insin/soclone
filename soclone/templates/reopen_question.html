@@ -5,6 +5,7 @@
 {% block content %}
 <p>You are about to reopen the question <a href="{{ question.absolute_url }}">{{ question.title }}</a>.</p>
 <form id="close-question" action="{% url close_question question.id %}" method="POST">
+  {% csrf_token %}
   <div class="form-submit">
     <input type="submit" name="reopen" value="Reopen Question">
     <a href="{{ question.get_absolute_url }}">Cancel</a>
