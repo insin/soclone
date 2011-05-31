@@ -22,7 +22,7 @@ Dependencies
 
 4. `lxml`_ for HTML diffing.
 
-5. Oh, and `Django`_ 1.0 or greater, of course.
+5. Oh, and `Django`_ 1.2 or greater, of course.
 
 .. _`django_html`: http://github.com/simonw/django-html
 .. _`python-markdown2`: http://code.google.com/p/python-markdown2/
@@ -33,34 +33,21 @@ Dependencies
 Installation
 ------------
 
-To play around with SOClone while it's being developed:
+To play around with SOClone:
 
 1. Use the pip-requirements.txt file to install dependencies with pip.
 
-2. Create a ``local_settings.py`` file in the ``soclone`` project
-   directory, using the template supplied in the ``settings.py``
-   docstring.
-
-   SOClone is being developed against SQLite initially, using settings
-   something like the following::
-
-      import os
-      DIRNAME = os.path.dirname(__file__)
-      DATABASE_ENGINE = 'sqlite3'
-      DATABASE_NAME = os.path.join(DIRNAME, 'database.db')
-      MEDIA_URL = '/media/'
-
-3. Run the following command to create the database::
+2. Run the following command to create the database::
 
       django-admin.py syncdb --settings=soclone.settings
 
    You will be prompted to create a superuser.
 
-4. Run the following command to start the development server::
+3. Run the following command to start the development server::
 
       django-admin.py runserver --settings=soclone.settings
 
-5. Cross your fingers, open http://localhost:8000/questions/ and log in
+4. Cross your fingers, open http://localhost:8000/questions/ and log in
    with the superuser account you created.
 
    Here be dragons.
